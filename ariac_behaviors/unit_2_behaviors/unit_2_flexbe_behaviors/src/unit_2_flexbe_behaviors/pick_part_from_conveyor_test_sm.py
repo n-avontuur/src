@@ -45,7 +45,7 @@ class pick_part_from_conveyor_testSM(Behavior):
 
 
 	def create(self):
-		# x:649 y:56, x:174 y:207
+		# x:850 y:37, x:174 y:207
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 		_state_machine.userdata.part = ''
 		_state_machine.userdata.robot_namespace = '/ariac/arm1'
@@ -57,14 +57,14 @@ class pick_part_from_conveyor_testSM(Behavior):
 
 
 		with _state_machine:
-			# x:113 y:43
+			# x:227 y:45
 			OperatableStateMachine.add('pick_part_from_conveyor',
 										self.use_behavior(pick_part_from_conveyorSM, 'pick_part_from_conveyor'),
 										transitions={'finished': 'PartMessage', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'robot_namespace': 'robot_namespace', 'part': 'part'})
 
-			# x:385 y:51
+			# x:607 y:51
 			OperatableStateMachine.add('PartMessage',
 										MessageState(),
 										transitions={'continue': 'finished'},

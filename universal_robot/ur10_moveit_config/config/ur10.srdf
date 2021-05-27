@@ -44,70 +44,116 @@
         <joint name="wrist_3_joint" value="0" />
     </group_state>
 <!--Robot1-->
-    <group_state name="bin1PreGraspR1" group="manipulator">
-        <joint name="linear_arm_actuator_joint" value="0" />
-        <joint name="shoulder_pan_joint" value="3.65" />
-        <joint name="shoulder_lift_joint" value="-1.01" />
-        <joint name="elbow_joint" value="1.88" />
-        <joint name="wrist_1_joint" value="3.77" />
-        <joint name="wrist_2_joint" value="-1.51" />
-        <joint name="wrist_3_joint" value="0" />
-    </group_state>
-    <group_state name="bin2PreGraspR1" group="manipulator">
-        <joint name="linear_arm_actuator_joint" value="0" />
-        <joint name="shoulder_pan_joint" value="3.65" />
-        <joint name="shoulder_lift_joint" value="-1.01" />
-        <joint name="elbow_joint" value="1.88" />
-        <joint name="wrist_1_joint" value="3.77" />
-        <joint name="wrist_2_joint" value="-1.51" />
-        <joint name="wrist_3_joint" value="0" />
-    </group_state>
-    <group_state name="bin3PreGraspR1" group="manipulator">
-        <joint name="linear_arm_actuator_joint" value="0" />
-        <joint name="shoulder_pan_joint" value="3.65" />
-        <joint name="shoulder_lift_joint" value="-1.01" />
-        <joint name="elbow_joint" value="1.88" />
-        <joint name="wrist_1_joint" value="3.77" />
-        <joint name="wrist_2_joint" value="-1.51" />
-        <joint name="wrist_3_joint" value="0" />
-    </group_state>
-
-<!--Robot2-->
-    <group_state name="tray1PreDropR2" group="manipulator">
+    <group_state name="tray1PreDropR1" group="manipulator">
         <joint name="linear_arm_actuator_joint" value="1.18" />
-        <joint name="shoulder_pan_joint" value="1.38" />
+        <joint name="shoulder_pan_joint" value="1.51" />
         <joint name="shoulder_lift_joint" value="-0.5" />
         <joint name="elbow_joint" value="1.26" />
         <joint name="wrist_1_joint" value="4.02" />
         <joint name="wrist_2_joint" value="-1.51" />
         <joint name="wrist_3_joint" value="0" />
     </group_state>
-    <group_state name="bin4PreGraspR2" group="manipulator">
+    <group_state name="homeR1" group="manipulator">
         <joint name="linear_arm_actuator_joint" value="0" />
+        <joint name="shoulder_pan_joint" value="1.27" />
+        <joint name="shoulder_lift_joint" value="-1.57" />
+        <joint name="elbow_joint" value="1.57" />
+        <joint name="wrist_1_joint" value="-1.57" />
+        <joint name="wrist_2_joint" value="-1.57" />
+        <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    <group_state name="bin1PreGraspR1" group="manipulator">
+        <joint name="linear_arm_actuator_joint" value="1.15" />
         <joint name="shoulder_pan_joint" value="3.65" />
-        <joint name="shoulder_lift_joint" value="-1.01" />
-        <joint name="elbow_joint" value="1.88" />
-        <joint name="wrist_1_joint" value="3.77" />
+        <joint name="shoulder_lift_joint" value="-1.21" />
+        <joint name="elbow_joint" value="2.14" />
+        <joint name="wrist_1_joint" value="3.65" />
+        <joint name="wrist_2_joint" value="-1.51" />
+        <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    <group_state name="bin2PreGraspR1" group="manipulator">
+      <joint name="linear_arm_actuator_joint" value="0.4" />
+      <joint name="shoulder_pan_joint" value="3.65" />
+      <joint name="shoulder_lift_joint" value="-1.21" />
+      <joint name="elbow_joint" value="2.14" />
+      <joint name="wrist_1_joint" value="3.65" />
+      <joint name="wrist_2_joint" value="-1.51" />
+      <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    <group_state name="bin3PreGraspR1" group="manipulator">
+      <joint name="linear_arm_actuator_joint" value="-0.35" />
+      <joint name="shoulder_pan_joint" value="3.65" />
+      <joint name="shoulder_lift_joint" value="-1.21" />
+      <joint name="elbow_joint" value="2.14" />
+      <joint name="wrist_1_joint" value="3.65" />
+      <joint name="wrist_2_joint" value="-1.51" />
+      <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    </group_state>
+    <group_state name="bin4PreGraspR1" group="manipulator">
+      <joint name="linear_arm_actuator_joint" value="-1.1" />
+      <joint name="shoulder_pan_joint" value="3.65" />
+      <joint name="shoulder_lift_joint" value="-1.21" />
+      <joint name="elbow_joint" value="2.14" />
+      <joint name="wrist_1_joint" value="3.65" />
+      <joint name="wrist_2_joint" value="-1.51" />
+      <joint name="wrist_3_joint" value="0" />
+    </group_state>
+
+<!--Robot2-->
+    <group_state name="homeR2" group="manipulator">
+        <joint name="linear_arm_actuator_joint" value="0" />
+        <joint name="shoulder_pan_joint" value="1.27" />
+        <joint name="shoulder_lift_joint" value="-1.57" />
+        <joint name="elbow_joint" value="1.57" />
+        <joint name="wrist_1_joint" value="-1.57" />
+        <joint name="wrist_2_joint" value="-1.57" />
+        <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    <group_state name="tray2PreDropR2" group="manipulator">
+        <joint name="linear_arm_actuator_joint" value="-1.18" />
+        <joint name="shoulder_pan_joint" value="4.77" />
+        <joint name="shoulder_lift_joint" value="-0.5" />
+        <joint name="elbow_joint" value="1.26" />
+        <joint name="wrist_1_joint" value="4.02" />
+        <joint name="wrist_2_joint" value="-1.51" />
+        <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    <group_state name="bin3PreGraspR2" group="manipulator">
+        <joint name="linear_arm_actuator_joint" value="1.18" />
+        <joint name="shoulder_pan_joint" value="3.05" />
+        <joint name="shoulder_lift_joint" value="-1.21" />
+        <joint name="elbow_joint" value="2.14" />
+        <joint name="wrist_1_joint" value="3.15" />
+        <joint name="wrist_2_joint" value="-1.51" />
+        <joint name="wrist_3_joint" value="0" />
+    </group_state>
+    <group_state name="bin4PreGraspR2" group="manipulator">
+        <joint name="linear_arm_actuator_joint" value="0.64" />
+        <joint name="shoulder_pan_joint" value="3.05" />
+        <joint name="shoulder_lift_joint" value="-1.21" />
+        <joint name="elbow_joint" value="2.14" />
+        <joint name="wrist_1_joint" value="3.15" />
         <joint name="wrist_2_joint" value="-1.51" />
         <joint name="wrist_3_joint" value="0" />
     </group_state>
     <group_state name="bin5PreGraspR2" group="manipulator">
-        <joint name="linear_arm_actuator_joint" value="0" />
-        <joint name="shoulder_pan_joint" value="3.65" />
-        <joint name="shoulder_lift_joint" value="-1.01" />
-        <joint name="elbow_joint" value="1.88" />
-        <joint name="wrist_1_joint" value="3.77" />
-        <joint name="wrist_2_joint" value="-1.51" />
-        <joint name="wrist_3_joint" value="0" />
+      <joint name="linear_arm_actuator_joint" value="-0.14" />
+      <joint name="shoulder_pan_joint" value="3.15" />
+      <joint name="shoulder_lift_joint" value="-1.21" />
+      <joint name="elbow_joint" value="2.14" />
+      <joint name="wrist_1_joint" value="3.65" />
+      <joint name="wrist_2_joint" value="-1.51" />
+      <joint name="wrist_3_joint" value="0" />
     </group_state>
     <group_state name="bin6PreGraspR2" group="manipulator">
-        <joint name="linear_arm_actuator_joint" value="0" />
-        <joint name="shoulder_pan_joint" value="3.65" />
-        <joint name="shoulder_lift_joint" value="-1.01" />
-        <joint name="elbow_joint" value="1.88" />
-        <joint name="wrist_1_joint" value="3.77" />
-        <joint name="wrist_2_joint" value="-1.51" />
-        <joint name="wrist_3_joint" value="0" />
+      <joint name="linear_arm_actuator_joint" value="-0.9" />
+      <joint name="shoulder_pan_joint" value="3.15" />
+      <joint name="shoulder_lift_joint" value="-1.21" />
+      <joint name="elbow_joint" value="2.14" />
+      <joint name="wrist_1_joint" value="3.65" />
+      <joint name="wrist_2_joint" value="-1.51" />
+      <joint name="wrist_3_joint" value="0" />
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="moveit_ee" parent_link="ee_link" group="endeffector" />

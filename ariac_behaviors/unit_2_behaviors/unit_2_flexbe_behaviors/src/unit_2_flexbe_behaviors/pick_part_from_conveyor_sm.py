@@ -9,6 +9,7 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.dummy_state import DummyState
+from ariac_flexbe_states.lookup_from_table import LookupFromTableState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -43,10 +44,11 @@ class pick_part_from_conveyorSM(Behavior):
 
 
 	def create(self):
-		# x:30 y:365, x:130 y:365
+		# x:869 y:50, x:130 y:365
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['robot_namespace'], output_keys=['part'])
 		_state_machine.userdata.part = ''
 		_state_machine.userdata.robot_namespace = ''
+		_state_machine.userdata.index_value = '4''3'
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -55,10 +57,17 @@ class pick_part_from_conveyorSM(Behavior):
 
 
 		with _state_machine:
-			# x:198 y:86
+			# x:204 y:58
+			OperatableStateMachine.add('creatLookUpTable',
+										LookupFromTableState(parameter_name='/ariac/material_locations', table_name='$HOME/Fase2-2020-2021/src/assignment/config/ariac_unit_2_tables.tbl', index_title='index', column_title='colum'),
+										transitions={'found': 'DummyState', 'not_found': 'failed'},
+										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
+										remapping={'index_value': 'index_value', 'column_value': 'column_value'})
+
+			# x:409 y:63
 			OperatableStateMachine.add('DummyState',
 										DummyState(),
-										transitions={'done': 'failed'},
+										transitions={'done': 'finished'},
 										autonomy={'done': Autonomy.Off})
 
 

@@ -1,7 +1,52 @@
 <?xml version="1.0" ?>
 <tables>
-    <table name = "unit2_table">
+    <table name = "R1_table">
+        <bin name="TransportR1">
+         <robot_config value="homeR1" />
+         <camera_topic value="/ariac/logical_camera_bin1" />
+         <camera_frame value="logical_camera_bin1_frame" />
+       </bin>
+        <bin name="bin1R1">
+         <robot_config value="bin1PreGraspR1" />
+         <camera_topic value="/ariac/logical_camera_bin1" />
+         <camera_frame value="logical_camera_bin1_frame" />
+       </bin>
+       <bin name="bin2R1">
+        <robot_config value="bin2PreGraspR1" />
+        <camera_topic value="/ariac/logical_camera_bin2" />
+        <camera_frame value="logical_camera_bin2_frame" />
+      </bin>
+      <bin name="bin3R1">
+       <robot_config value="bin3PreGraspR1" />
+       <camera_topic value="/ariac/logical_camera_bin3" />
+       <camera_frame value="logical_camera_bin3_frame" />
+      </bin>
+      <bin name="bin4R1">
+       <robot_config value="bin4PreGraspR1" />
+       <camera_topic value="/ariac/logical_camera_bin4" />
+       <camera_frame value="logical_camera_bin4_frame" />
+      </bin>
     </table>
-    <table name = "andere_tabel_voor_unit2">
+    <table name = "R2_table">
+    <bin name="bin3R2">
+     <robot_config value="bin3PreGraspR2" />
+     <camera_topic value="/ariac/logical_camera_bin3" />
+     <camera_frame value="logical_camera_bin3_frame" />
+    </bin>
+    <bin name="bin4R2">
+     <robot_config value="bin4PreGraspR2" />
+     <camera_topic value="/ariac/logical_camera_bin4" />
+     <camera_frame value="logical_camera_bin4_frame" />
+    </bin>
+     <bin name="bin5R2">
+      <robot_config value="bin5PreGraspR2" />
+      <camera_topic value="/ariac/logical_camera_bin5" />
+      <camera_frame value="logical_camera_bin5_frame" />
+    </bin>
+    <bin name="bin6R2">
+     <robot_config value="bin6PreGraspR2" />
+     <camera_topic value="/ariac/logical_camera_bin6" />
+     <camera_frame value="logical_camera_bin6_frame" />
+     </bin>
     </table>
 </tables>
