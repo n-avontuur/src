@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="transport_ conveyor_to_pick_location">
+
+	<executable package_path="unit_2_flexbe_behaviors.transport__conveyor_to_pick_location_sm" class="transport_conveyor_to_pick_locationSM" />
+	<tagstring>Conveyor, part</tagstring>
+	<author>niels avontuur</author>
+	<date>Thu May 27 2021</date>
+	<description>
+		For starting conveyor and stopping if part is in the right place
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
