@@ -48,7 +48,8 @@ class pick_part_from_conveyorSM(Behavior):
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['robot_namespace'], output_keys=['part'])
 		_state_machine.userdata.part = ''
 		_state_machine.userdata.robot_namespace = ''
-		_state_machine.userdata.index_value = '4''3'
+		_state_machine.userdata.bin = 'bin1'
+		_state_machine.userdata.camera_topic = ""
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -59,10 +60,10 @@ class pick_part_from_conveyorSM(Behavior):
 		with _state_machine:
 			# x:204 y:58
 			OperatableStateMachine.add('creatLookUpTable',
-										LookupFromTableState(parameter_name='/ariac/material_locations', table_name='$HOME/Fase2-2020-2021/src/assignment/config/ariac_unit_2_tables.tbl', index_title='index', column_title='colum'),
+										LookupFromTableState(parameter_name='/ariac_tables_unit2', table_name='bin_configuration_R1', index_title='bin', column_title='camera_topic'),
 										transitions={'found': 'DummyState', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'index_value': 'index_value', 'column_value': 'column_value'})
+										remapping={'index_value': 'bin', 'column_value': 'camera_topic'})
 
 			# x:409 y:63
 			OperatableStateMachine.add('DummyState',
