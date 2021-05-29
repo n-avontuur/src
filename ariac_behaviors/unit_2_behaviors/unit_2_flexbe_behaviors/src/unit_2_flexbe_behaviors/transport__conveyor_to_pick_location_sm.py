@@ -9,7 +9,6 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.detect_break_beam_state import DetectBreakBeamState
-from ariac_flexbe_states.end_assignment_state import EndAssignment
 from ariac_flexbe_states.set_conveyorbelt_power_state import SetConveyorbeltPowerState
 from ariac_flexbe_states.start_assignment_state import StartAssignment
 # Additional imports can be added inside the following tags
@@ -46,7 +45,7 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 
 
 	def create(self):
-		# x:1163 y:314, x:578 y:357
+		# x:1363 y:79, x:578 y:357
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 		_state_machine.userdata.powerOFF = 0
 		_state_machine.userdata.powerON = 100
@@ -72,12 +71,6 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'power': 'powerON'})
 
-			# x:1109 y:73
-			OperatableStateMachine.add('endAssigment',
-										EndAssignment(),
-										transitions={'continue': 'finished'},
-										autonomy={'continue': Autonomy.Off})
-
 			# x:577 y:65
 			OperatableStateMachine.add('partDetectByBreakbeam',
 										DetectBreakBeamState(),
@@ -88,7 +81,7 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 			# x:828 y:69
 			OperatableStateMachine.add('conveyorOFF',
 										SetConveyorbeltPowerState(),
-										transitions={'continue': 'endAssigment', 'fail': 'failed'},
+										transitions={'continue': 'finished', 'fail': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'power': 'powerOFF'})
 
