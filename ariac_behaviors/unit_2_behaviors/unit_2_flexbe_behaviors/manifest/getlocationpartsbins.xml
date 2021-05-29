@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="GetLocationPartsBins">
+
+	<executable package_path="unit_2_flexbe_behaviors.getlocationpartsbins_sm" class="GetLocationPartsBinsSM" />
+	<tagstring></tagstring>
+	<author>niels avontuur</author>
+	<date>Sat May 29 2021</date>
+	<description>
+		Add location to bins
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

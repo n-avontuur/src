@@ -8,9 +8,10 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from ariac_flexbe_states.detect_break_beam_state import DetectBreakBeamState
 from ariac_flexbe_states.set_conveyorbelt_power_state import SetConveyorbeltPowerState
 from ariac_flexbe_states.start_assignment_state import StartAssignment
+from flexbe_states.subscriber_state import SubscriberState
+from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -45,11 +46,11 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 
 
 	def create(self):
+		breakbeam = "/ariac/break_beam_1_change"
 		# x:1363 y:79, x:578 y:357
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 		_state_machine.userdata.powerOFF = 0
 		_state_machine.userdata.powerON = 100
-		_state_machine.userdata.breakbeam = "/ariac/break_beam_1_change"
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -64,26 +65,32 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 										transitions={'continue': 'conveyorON'},
 										autonomy={'continue': Autonomy.Off})
 
-			# x:301 y:62
-			OperatableStateMachine.add('conveyorON',
-										SetConveyorbeltPowerState(),
-										transitions={'continue': 'partDetectByBreakbeam', 'fail': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
-										remapping={'power': 'powerON'})
-
-			# x:577 y:65
-			OperatableStateMachine.add('partDetectByBreakbeam',
-										DetectBreakBeamState(),
-										transitions={'continue': 'conveyorOFF', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'topic': 'breakbeam', 'object_detected': 'object_detected'})
-
 			# x:828 y:69
 			OperatableStateMachine.add('conveyorOFF',
 										SetConveyorbeltPowerState(),
 										transitions={'continue': 'finished', 'fail': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'power': 'powerOFF'})
+
+			# x:301 y:62
+			OperatableStateMachine.add('conveyorON',
+										SetConveyorbeltPowerState(),
+										transitions={'continue': 'wait', 'fail': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
+										remapping={'power': 'powerON'})
+
+			# x:506 y:51
+			OperatableStateMachine.add('wait',
+										WaitState(wait_time=0.5),
+										transitions={'done': 'checkBreamBeam'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:653 y:60
+			OperatableStateMachine.add('checkBreamBeam',
+										SubscriberState(topic=breakbeam, blocking=True, clear=True),
+										transitions={'received': 'conveyorOFF', 'unavailable': 'failed'},
+										autonomy={'received': Autonomy.Off, 'unavailable': Autonomy.Off},
+										remapping={'message': 'message'})
 
 
 		return _state_machine

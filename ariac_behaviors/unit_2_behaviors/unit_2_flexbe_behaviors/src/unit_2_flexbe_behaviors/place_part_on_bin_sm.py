@@ -19,7 +19,6 @@ from ariac_flexbe_states.start_assignment_state import StartAssignment
 from ariac_flexbe_states.vacuum_gripper_control_state import VacuumGripperControlState
 from ariac_logistics_flexbe_states.get_material_locations import GetMaterialLocationsState
 from ariac_support_flexbe_states.get_item_from_list_state import GetItemFromListState
-from flexbe_states.log_key_state import LogKeyState
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
@@ -57,7 +56,7 @@ class place_part_on_binSM(Behavior):
 	def create(self):
 		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
 		# x:51 y:714, x:853 y:393
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part'])
 		_state_machine.userdata.part = "gear_part"
 		_state_machine.userdata.config_name = ' '
 		_state_machine.userdata.move_group = 'manipulator'
@@ -72,8 +71,8 @@ class place_part_on_binSM(Behavior):
 		_state_machine.userdata.rotation = 0
 		_state_machine.userdata.gripper_service = '/ariac/arm1/gripper/control'
 		_state_machine.userdata.gripper_status_topic = '/ariac/arm1/gripper/state'
-		_state_machine.userdata.gripper_status_attached = false
-		_state_machine.userdata.gripper_status_enabled = false
+		_state_machine.userdata.gripper_status_attached = False
+		_state_machine.userdata.gripper_status_enabled = False
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -97,7 +96,7 @@ class place_part_on_binSM(Behavior):
 
 			# x:1192 y:709
 			OperatableStateMachine.add('disableGripper',
-										VacuumGripperControlState(enable=false),
+										VacuumGripperControlState(enable=False),
 										transitions={'continue': 'getStatusGripper', 'failed': 'wait_2_2'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'service_name': 'gripper_service'})
@@ -129,13 +128,6 @@ class place_part_on_binSM(Behavior):
 										autonomy={'done': Autonomy.Off, 'invalid_index': Autonomy.Off},
 										remapping={'list': 'locations', 'index': 'zero', 'item': 'bin'})
 
-			# x:1460 y:287
-			OperatableStateMachine.add('logBinName',
-										LogKeyState(text='Name of Pregrasp :', severity=Logger.REPORT_HINT),
-										transitions={'done': 'detectPart'},
-										autonomy={'done': Autonomy.Off},
-										remapping={'data': 'config_name'})
-
 			# x:793 y:33
 			OperatableStateMachine.add('lookUpCameraFrame',
 										LookupFromTableState(parameter_name='/ariac_tables_unit2', table_name='bin_configuration_R1', index_title='bin', column_title='camera_frame'),
@@ -153,7 +145,7 @@ class place_part_on_binSM(Behavior):
 			# x:1424 y:130
 			OperatableStateMachine.add('lookUpPregrasp',
 										LookupFromTableState(parameter_name='/ariac_tables_unit2', table_name='bin_configuration_R1', index_title='bin', column_title='robot_config'),
-										transitions={'found': 'logBinName', 'not_found': 'failed'},
+										transitions={'found': 'detectPart', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'config_name'})
 
