@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="sortingParts">
+
+	<executable package_path="ariac_flexbe_example_behaviors.sortingparts_sm" class="sortingPartsSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Sat May 29 2021</date>
+	<description>
+		For sorting the parts to different bins
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="pick_part_from_conveyor" />
+	<contains name="place_part_on_bin" />
+	<contains name="transport_ conveyor_to_pick_location" />
+
+	<!-- Available Parameters -->
+
+</behavior>
