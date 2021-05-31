@@ -46,21 +46,30 @@
     </bin>
   </table>
 
-  <table name="parts">
+  <table name="parts_offsets">
     <part name="gear_part">
       <offsetX value="0.03" />
       <offsetY value="0.02" />
-      <offsetZ value="0.02" /> 
+      <offsetZ value="0.025" /> 
+      <offsetSizeX value=""/>
+      <offsetSizeY value=""/>
+      <offsetSizeZ value=""/>
     </part>
     <part name="gasket_part">
       <offsetX value="0.03" />
       <offsetY value="0.02" />
-      <offsetZ value="0.02" /> 
+      <offsetZ value="0.035" />
+      <offsetSizeX value=""/>
+      <offsetSizeY value=""/>
+      <offsetSizeZ value=""/>
     </part>
     <part name="piston_rod_part">
       <offsetX value="0.03" />
       <offsetY value="0.02" />
-      <offsetZ value="0.02" /> 
+      <offsetZ value="0.02" />
+      <offsetSizeX value=""/>
+      <offsetSizeY value=""/>
+      <offsetSizeZ value=""/> 
     </part>
 
   </table>

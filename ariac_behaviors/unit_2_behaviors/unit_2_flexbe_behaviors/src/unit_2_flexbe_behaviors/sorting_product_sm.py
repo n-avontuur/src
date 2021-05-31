@@ -52,9 +52,12 @@ class sorting_productSM(Behavior):
 
 
 	def create(self):
-		# x:967 y:602, x:143 y:316
+		# x:967 y:602, x:534 y:297
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
-		_state_machine.userdata.part = ''
+		_state_machine.userdata.binPartType = ['empty','empty', 'empty', 'empty', 'empty', 'empty']
+		_state_machine.userdata.gasket = [[0,0,0][0][0,0][0,0,0]]
+		_state_machine.userdata.piston = [[0,0,0][0][0,0][0,0,0]]
+		_state_machine.userdata.gear = [[0,0,0][0][0,0][0,0,0]]
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -69,7 +72,7 @@ class sorting_productSM(Behavior):
 										transitions={'finished': 'GetLocationPartsBins', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
-			# x:1006 y:406
+			# x:984 y:144
 			OperatableStateMachine.add('pick_part_from_conveyor',
 										self.use_behavior(pick_part_from_conveyorSM, 'pick_part_from_conveyor',
 											default_keys=['robot_namespace']),
@@ -77,24 +80,25 @@ class sorting_productSM(Behavior):
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'part': 'part'})
 
-			# x:1022 y:484
+			# x:987 y:251
 			OperatableStateMachine.add('place_part_on_bin',
 										self.use_behavior(place_part_on_binSM, 'place_part_on_bin'),
 										transitions={'finished': 'finished', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'part': 'part'})
 
-			# x:948 y:335
+			# x:769 y:20
 			OperatableStateMachine.add('transport_ conveyor_to_pick_location',
 										self.use_behavior(transport_conveyor_to_pick_locationSM, 'transport_ conveyor_to_pick_location'),
 										transitions={'finished': 'pick_part_from_conveyor', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
-			# x:560 y:156
+			# x:486 y:13
 			OperatableStateMachine.add('GetLocationPartsBins',
 										self.use_behavior(GetLocationPartsBinsSM, 'GetLocationPartsBins'),
 										transitions={'finished': 'transport_ conveyor_to_pick_location', 'failed': 'failed'},
-										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
+										remapping={'binPartType': 'binPartType'})
 
 
 		return _state_machine

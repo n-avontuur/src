@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="place_Part_Empty_Bin">
+
+	<executable package_path="unit_2_flexbe_behaviors.place_part_empty_bin_sm" class="place_Part_Empty_BinSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Sun May 30 2021</date>
+	<description>
+		placing parts in empty bin
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

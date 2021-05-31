@@ -73,6 +73,7 @@ class place_part_on_binSM(Behavior):
 		_state_machine.userdata.gripper_status_topic = '/ariac/arm1/gripper/state'
 		_state_machine.userdata.gripper_status_attached = False
 		_state_machine.userdata.gripper_status_enabled = False
+		_state_machine.userdata.binPartType = ['empty', 'empty', 'empty', 'empty', 'empty', 'empty']
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -92,7 +93,7 @@ class place_part_on_binSM(Behavior):
 										DetectPartCameraAriacState(time_out=0.5),
 										transitions={'continue': 'moveToPregrasp', 'failed': 'failed', 'not_found': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'ref_frame': 'camera_ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part', 'pose': 'pose'})
+										remapping={'ref_frame': 'camera_ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part', 'pose': 'pose', 'numberOfModels': 'numberOfModels'})
 
 			# x:1192 y:709
 			OperatableStateMachine.add('disableGripper',
