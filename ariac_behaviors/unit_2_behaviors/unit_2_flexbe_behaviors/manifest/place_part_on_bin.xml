@@ -12,6 +12,8 @@
 
 
 	<!-- Contained Behaviors -->
+	<contains name="locate_Place_In_Bin_With_Content" />
+	<contains name="Locate_Place_In_Empty_Bin" />
 
 	<!-- Available Parameters -->
 

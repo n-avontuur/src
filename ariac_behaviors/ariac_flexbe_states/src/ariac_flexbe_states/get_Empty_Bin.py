@@ -24,10 +24,6 @@ class getEmptyBin(EventState):
 					i = i + 1
 					userdata.bin = 'bin'+ str(i)
 					userdata.bin_frame = 'bin'+ str(i) + '_frame'
-					if i > 1 and i < 3:
-						userdata.robot_name='R1'
-					if i > 3 and i < 6:
-						userdata.robot_name='R2'
 					Logger.loginfo('Empty bin :'+ userdata.bin)
 					return 'continue'
 		except :
