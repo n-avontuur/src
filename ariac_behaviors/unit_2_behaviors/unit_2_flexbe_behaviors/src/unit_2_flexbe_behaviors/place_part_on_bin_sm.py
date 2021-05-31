@@ -9,10 +9,8 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.compute_grasp_ariac_state import ComputeGraspAriacState
-from ariac_flexbe_states.detect_part_camera_ariac_state import DetectPartCameraAriacState
 from ariac_flexbe_states.end_assignment_state import EndAssignment
 from ariac_flexbe_states.get_vacuum_gripper_status_state import GetVacuumGripperStatusState
-from ariac_flexbe_states.lookup_from_table import LookupFromTableState
 from ariac_flexbe_states.moveit_to_joints_dyn_ariac_state import MoveitToJointsDynAriacState
 from ariac_flexbe_states.srdf_state_to_moveit_ariac_state import SrdfStateToMoveitAriac
 from ariac_flexbe_states.start_assignment_state import StartAssignment
@@ -20,6 +18,8 @@ from ariac_flexbe_states.vacuum_gripper_control_state import VacuumGripperContro
 from ariac_logistics_flexbe_states.get_material_locations import GetMaterialLocationsState
 from ariac_support_flexbe_states.get_item_from_list_state import GetItemFromListState
 from flexbe_states.wait_state import WaitState
+from unit_2_flexbe_behaviors.locate_place_in_bin_with_content_sm import locate_Place_In_Bin_With_ContentSM
+from unit_2_flexbe_behaviors.locate_place_in_empty_bin_sm import Locate_Place_In_Empty_BinSM
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -43,6 +43,8 @@ class place_part_on_binSM(Behavior):
 		# parameters of this behavior
 
 		# references to used behaviors
+		self.add_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin')
+		self.add_behavior(locate_Place_In_Bin_With_ContentSM, 'locate_Place_In_Bin_With_Content')
 
 		# Additional initialization code can be added inside the following tags
 		# [MANUAL_INIT]
@@ -56,8 +58,8 @@ class place_part_on_binSM(Behavior):
 	def create(self):
 		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
 		# x:51 y:714, x:853 y:393
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part'])
-		_state_machine.userdata.part = "gear_part"
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part', 'gasket', 'piston', 'gear'])
+		_state_machine.userdata.partType = "gear_part"
 		_state_machine.userdata.config_name = ' '
 		_state_machine.userdata.move_group = 'manipulator'
 		_state_machine.userdata.action_topic_namespace = '/ariac/arm1'
@@ -74,6 +76,11 @@ class place_part_on_binSM(Behavior):
 		_state_machine.userdata.gripper_status_attached = False
 		_state_machine.userdata.gripper_status_enabled = False
 		_state_machine.userdata.binPartType = ['empty', 'empty', 'empty', 'empty', 'empty', 'empty']
+		_state_machine.userdata.gasket = []
+		_state_machine.userdata.piston = []
+		_state_machine.userdata.gear = []
+		_state_machine.userdata.pose = []
+		_state_machine.userdata.part = ''
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -88,14 +95,14 @@ class place_part_on_binSM(Behavior):
 										transitions={'continue': 'getPartLocation'},
 										autonomy={'continue': Autonomy.Off})
 
-			# x:1416 y:445
-			OperatableStateMachine.add('detectPart',
-										DetectPartCameraAriacState(time_out=0.5),
-										transitions={'continue': 'moveToPregrasp', 'failed': 'failed', 'not_found': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'ref_frame': 'camera_ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part', 'pose': 'pose', 'numberOfModels': 'numberOfModels'})
+			# x:1393 y:629
+			OperatableStateMachine.add('computeDrop',
+										ComputeGraspAriacState(joint_names=joint_names),
+										transitions={'continue': 'moveToDrop', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pose', 'offset': 'offset', 'rotation': 'rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
-			# x:1192 y:709
+			# x:586 y:706
 			OperatableStateMachine.add('disableGripper',
 										VacuumGripperControlState(enable=False),
 										transitions={'continue': 'getStatusGripper', 'failed': 'wait_2_2'},
@@ -108,14 +115,14 @@ class place_part_on_binSM(Behavior):
 										transitions={'continue': 'finished'},
 										autonomy={'continue': Autonomy.Off})
 
-			# x:304 y:31
+			# x:40 y:115
 			OperatableStateMachine.add('getPartLocation',
 										GetMaterialLocationsState(),
 										transitions={'continue': 'itemFromList'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'part': 'part', 'material_locations': 'locations'})
+										remapping={'part': 'partType', 'material_locations': 'locations'})
 
-			# x:672 y:704
+			# x:334 y:705
 			OperatableStateMachine.add('getStatusGripper',
 										GetVacuumGripperStatusState(),
 										transitions={'continue': 'endAssigment', 'fail': 'wait_2_2'},
@@ -125,30 +132,16 @@ class place_part_on_binSM(Behavior):
 			# x:519 y:29
 			OperatableStateMachine.add('itemFromList',
 										GetItemFromListState(),
-										transitions={'done': 'lookUpCameraFrame', 'invalid_index': 'failed'},
+										transitions={'done': 'locate_Place_In_Bin_With_Content', 'invalid_index': 'Locate_Place_In_Empty_Bin'},
 										autonomy={'done': Autonomy.Off, 'invalid_index': Autonomy.Off},
 										remapping={'list': 'locations', 'index': 'zero', 'item': 'bin'})
 
-			# x:793 y:33
-			OperatableStateMachine.add('lookUpCameraFrame',
-										LookupFromTableState(parameter_name='/ariac_tables_unit2', table_name='bin_configuration_R1', index_title='bin', column_title='camera_frame'),
-										transitions={'found': 'lookUpCameraTopic', 'not_found': 'failed'},
-										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'index_value': 'bin', 'column_value': 'camera_frame'})
-
-			# x:1430 y:47
-			OperatableStateMachine.add('lookUpCameraTopic',
-										LookupFromTableState(parameter_name='/ariac_tables_unit2', table_name='bin_configuration_R1', index_title='bin', column_title='camera_topic'),
-										transitions={'found': 'lookUpPregrasp', 'not_found': 'failed'},
-										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'index_value': 'bin', 'column_value': 'camera_topic'})
-
-			# x:1424 y:130
-			OperatableStateMachine.add('lookUpPregrasp',
-										LookupFromTableState(parameter_name='/ariac_tables_unit2', table_name='bin_configuration_R1', index_title='bin', column_title='robot_config'),
-										transitions={'found': 'detectPart', 'not_found': 'failed'},
-										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'index_value': 'bin', 'column_value': 'config_name'})
+			# x:820 y:34
+			OperatableStateMachine.add('locate_Place_In_Bin_With_Content',
+										self.use_behavior(locate_Place_In_Bin_With_ContentSM, 'locate_Place_In_Bin_With_Content'),
+										transitions={'finished': 'moveToPregrasp', 'failed': 'failed'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
+										remapping={'bin': 'bin', 'partType': 'partType', 'gear': 'gear', 'gasket': 'gasket', 'piston': 'piston', 'pose': 'pose', 'config_name': 'config_name', 'robot_Name': 'robot_Name', 'pose_offset': 'pose_offset'})
 
 			# x:1413 y:713
 			OperatableStateMachine.add('moveToDrop',
@@ -176,18 +169,18 @@ class place_part_on_binSM(Behavior):
 										transitions={'done': 'moveToDrop'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:1156 y:801
+			# x:503 y:810
 			OperatableStateMachine.add('wait_2_2',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'disableGripper'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:1423 y:629
-			OperatableStateMachine.add('computeDrop',
-										ComputeGraspAriacState(joint_names=joint_names),
-										transitions={'continue': 'moveToDrop', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pose', 'offset': 'offset', 'rotation': 'rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+			# x:653 y:210
+			OperatableStateMachine.add('Locate_Place_In_Empty_Bin',
+										self.use_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin'),
+										transitions={'finished': 'moveToPregrasp', 'failed': 'failed'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
+										remapping={'part': 'part', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'binPartType': 'binPartType', 'robot_Name': 'robot_Name', 'pose': 'pose', 'offset_pose': 'offset_pose'})
 
 
 		return _state_machine

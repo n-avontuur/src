@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="place_In_Bin_With_Content">
+<behavior name="locate_Place_In_Bin_With_Content">
 
-	<executable package_path="unit_2_flexbe_behaviors.place_in_bin_with_content_sm" class="place_In_Bin_With_ContentSM" />
+	<executable package_path="unit_2_flexbe_behaviors.locate_place_in_bin_with_content_sm" class="locate_Place_In_Bin_With_ContentSM" />
 	<tagstring></tagstring>
 	<author>Niels Avontuur</author>
 	<date>Mon May 31 2021</date>

@@ -11,37 +11,50 @@ class set_new_pose_part(EventState):
 	'''
 
 	def __init__(self):
-		super(set_new_pose_part,self).__init__(input_keys = ['part_offset','offsetSizeX','offsetSizeY','offsetSizeZ','NumOfParts'],outcomes = ['continue', 'failed'], output_keys = ['part_offset'])
+		super(set_new_pose_part,self).__init__(input_keys = ['part'],outcomes = ['continue', 'failed'], output_keys = ['part','pose'])
 
 
 	def execute(self, userdata):
-		
-		if self._offset_Y==0 and self._offset_X==0:
-			self._offset_Y-=self._offsetSize_x
-			self._offset_X-=self._offsetSize_y
+		matrix = [[self._maxNumberPartsX][self._maxNumberPartsX]]
+		x,y = matrix(self._numberParts)
+		Logger.loginfo('x: ' + x)
+		Logger.loginfo('y: ' + y)
+		if x==0 and y==0:
+			self._offset_y-=self._offsetSize_x
+			self._offset_x-=self._offsetSize_y
 			pass
-		if self._offset_X<0.3:
-			self._offset_X+=self._offsetSize_x
+		if x<self._maxNumberPartsX:
+			self._offset_x+=self._offsetSize_x
 			pass
-		if self._offset_X==0.3:
-			self._offset_Y+=self._offsetSize_y
+		if x==self._maxNumberPartsX:
+			self._offset_y+=self._offsetSize_y
 		return 'continue'
 		
 
 	def on_enter(self, userdata):
-		self._offset_X=userdata.part_offset(0)
-		self._offset_Y=userdata.part_offset(1)
-		self._offsetSize_x=userdata.offsetSizeX
-		self._offsetSize_y=userdata.offsetSizeY
-		self._offsetSize_z=userdata.offsetSizeZ
+		self._offset_x=userdata.part[0][0]
+		self._offset_y=userdata.part[0][1]
+		self._offset_z=userdata.part[0][2]
+		self._numberParts=userdata.part[1][0]
+		self._maxNumberPartsX=userdata.part[2][0]
+		self._maxNumberPartsY=userdata.part[2][1]
+		self._offsetSize_x=userdata.part[3][0]
+		self._offsetSize_y=userdata.part[3][1]
+		self._offsetSize_z=userdata.part[3][2]
 		pass
 
 	def on_exit(self, userdata):
-		userdata.part_offset(0)=self._offset_X
-		userdata.part_offset(1)=self._offset_Y
-		userdata.part_offset(2)=self._offsetSize_x
-		userdata.part_offset(3)=self._offsetSize_y
-		userdata.part_offset(4)=self._offsetSize_z
+		userdata.part[0][0]=self._offset_x
+		userdata.part[0][1]=self._offset_y
+		userdata.part[0][2]=self._offset_z
+		userdata.part[1][0]=self._numberParts
+		userdata.part[2][0]=self._maxNumberPartsX
+		userdata.part[2][1]=self._maxNumberPartsY
+		userdata.part[3][0]=self._offsetSize_x
+		userdata.part[3][1]=self._offsetSize_y
+		userdata.part[3][2]=self._offsetSize_z
+		userdata.pose = [self._offset_x, self._offset_y, self._offset_z]
+		Logger.loginfo('pose: ' + userdata.pose)
 		pass
 
 	def on_start(self):

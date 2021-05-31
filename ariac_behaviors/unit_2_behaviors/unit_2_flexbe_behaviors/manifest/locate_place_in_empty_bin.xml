@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="place_Part_Empty_Bin">
+<behavior name="Locate_Place_In_Empty_Bin">
 
-	<executable package_path="unit_2_flexbe_behaviors.place_part_empty_bin_sm" class="place_Part_Empty_BinSM" />
+	<executable package_path="unit_2_flexbe_behaviors.locate_place_in_empty_bin_sm" class="Locate_Place_In_Empty_BinSM" />
 	<tagstring></tagstring>
 	<author>Niels Avontuur</author>
 	<date>Sun May 30 2021</date>
 	<description>
-		placing parts in empty bin
+		Locating a place for the part in an empty bin
 	</description>
 
 

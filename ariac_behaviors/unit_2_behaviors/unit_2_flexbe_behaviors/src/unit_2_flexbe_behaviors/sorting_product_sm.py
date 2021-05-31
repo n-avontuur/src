@@ -55,10 +55,21 @@ class sorting_productSM(Behavior):
 		# x:967 y:602, x:534 y:297
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 		_state_machine.userdata.binPartType = ['empty','empty', 'empty', 'empty', 'empty', 'empty']
-		_state_machine.userdata.gasket = [[0,0,0][0][0,0][0,0,0]]
-		_state_machine.userdata.piston = [[0,0,0][0][0,0][0,0,0]]
-		_state_machine.userdata.gear = [[0,0,0][0][0,0][0,0,0]]
-
+		_state_machine.userdata.gasket_OffsetSize = [0.15,0.1,0.035]
+		_state_machine.userdata.piston_OffsetSize = [0.11,0.11,0.02]
+		_state_machine.userdata.gear_OffsetSize = [0.13,0.1,0.025]
+		_state_machine.userdata.gasket_NumberOf = 0
+		_state_machine.userdata.piston_NumberOf = 0
+		_state_machine.userdata.gear_NumberOf = 0
+		_state_machine.userdata.gasket_MaxNumberOf = [3,2]
+		_state_machine.userdata.piston_MaxNumberOf = [3,3]
+		_state_machine.userdata.gear_MaxNumberOf = [4,4]
+		_state_machine.userdata.gasket_Offset = [0.0,0.0,0.0]
+		_state_machine.userdata.piston_Offset = [0.0,0.0,0.0]
+		_state_machine.userdata.gear_Offset = [0.0,0.0,0.0]
+		_state_machine.userdata.gasket = [_state_machine.userdata.gasket_OffsetSize,_state_machine.userdata.gasket_NumberOf,_state_machine.userdata.gasket_MaxNumberOf,_state_machine.userdata.gasket_Offset]
+		_state_machine.userdata.piston = [_state_machine.userdata.piston_OffsetSize,_state_machine.userdata.piston_NumberOf,_state_machine.userdata.piston_MaxNumberOf,_state_machine.userdata.piston_Offset]
+		_state_machine.userdata.gear = [_state_machine.userdata.gear_OffsetSize,_state_machine.userdata.gear_NumberOf,_state_machine.userdata.gear_MaxNumberOf,_state_machine.userdata.gear_Offset]
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
 		
