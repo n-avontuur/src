@@ -11,11 +11,14 @@ class setNewPosePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setNewPosePart,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed'], output_keys = ['part_Content','pose_offset'])
+		super(setNewPosePart,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['part_Content','pose_offset'])
 
 
 	def execute(self, userdata):
 		matrix = [[self._maxNumberPartsX][self._maxNumberPartsY]]
+		if (self._numberParts+1) ==  (self._maxNumberPartsX*self._maxNumberPartsY):
+			self._numberParts = 0
+			return 'bin_Full'
 		x,y = matrix(self._numberParts)
 		Logger.loginfo('x: ' + x)
 		Logger.loginfo('y: ' + y)

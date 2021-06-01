@@ -130,8 +130,8 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 			# x:14 y:457
 			OperatableStateMachine.add('setNewPose',
 										setNewPosePart(),
-										transitions={'continue': 'finished', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'not_found'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
 										remapping={'part_Content': 'part_Content', 'pose_offset': 'pose_offset'})
 
 			# x:236 y:74
@@ -139,7 +139,7 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 										setPart(),
 										transitions={'continue': 'useR1', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'partType': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part': 'part_Contect'})
+										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part': 'part_Contect'})
 
 			# x:635 y:42
 			OperatableStateMachine.add('useR1',
