@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Test_list">
+
+	<executable package_path="unit_2_flexbe_behaviors.test_list_sm" class="Test_listSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Tue Jun 01 2021</date>
+	<description>
+		testing how to use list
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
