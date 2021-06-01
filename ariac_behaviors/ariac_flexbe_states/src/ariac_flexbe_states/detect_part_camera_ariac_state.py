@@ -72,7 +72,7 @@ class DetectPartCameraAriacState(EventState):
 
 	def __init__(self, time_out = 0.5):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
-		super(DetectPartCameraAriacState, self).__init__(outcomes = ['continue', 'failed', 'not_found'], input_keys = ['ref_frame', 'camera_topic', 'camera_frame', 'part'], output_keys = ['pose','numberOfModels'])
+		super(DetectPartCameraAriacState, self).__init__(outcomes = ['continue', 'failed', 'not_found'], input_keys = ['ref_frame', 'camera_topic', 'camera_frame', 'part'], output_keys = ['pose'])
 
 		# Store state parameter for later use.
 		self._wait = time_out
@@ -99,8 +99,6 @@ class DetectPartCameraAriacState(EventState):
 			return 'time_out'
 		if self._sub.has_msg(self._topic):
 			message = self._sub.get_last_msg(self._topic)
-			userdata.numberOfModels = len(message.models)
-			Logger.loginfo(userdata.numberOfModels)
 			for model in message.models:
 				if model.type == userdata.part:
 					pose = PoseStamped()

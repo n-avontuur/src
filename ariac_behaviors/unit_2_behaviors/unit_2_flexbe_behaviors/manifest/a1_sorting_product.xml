@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="a1_Sorting_Product">
+
+	<executable package_path="unit_2_flexbe_behaviors.a1_sorting_product_sm" class="a1_Sorting_ProductSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Mon May 31 2021</date>
+	<description>
+		This behavior is the main behavior for sorting of product
+	</description>
+
+
+	<!-- Contained Behaviors -->
+	<contains name="a1_setting_Parameters" />
+	<contains name="transport_ conveyor_to_pick_location" />
+	<contains name="a1_Move_Robot" />
+
+	<!-- Available Parameters -->
+
+</behavior>

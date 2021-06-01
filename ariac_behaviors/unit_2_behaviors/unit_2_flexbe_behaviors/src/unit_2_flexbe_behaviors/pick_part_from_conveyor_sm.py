@@ -53,8 +53,8 @@ class pick_part_from_conveyorSM(Behavior):
 		detect_TimeOut = 0.5
 		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
 		# x:985 y:688, x:871 y:512
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['robot_namespace'], output_keys=['part'])
-		_state_machine.userdata.part = ""
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['robot_namespace'], output_keys=['partType'])
+		_state_machine.userdata.partType = ""
 		_state_machine.userdata.robot_namespace = ''
 		_state_machine.userdata.bin = 'bin1'
 		_state_machine.userdata.Conveyor_camera_topic = '/ariac/logical_camera_1'

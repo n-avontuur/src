@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="a1_Move_Robot">
+
+	<executable package_path="unit_2_flexbe_behaviors.a1_move_robot_sm" class="a1_Move_RobotSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Mon May 31 2021</date>
+	<description>
+		This is for picking up the part and place it in the correct bin
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

@@ -14,15 +14,15 @@ class setPart(EventState):
 	'''
 
 	def __init__(self):
-		super(setPart,self).__init__(input_keys = ['partType','gasket','piston','gear'],outcomes = ['continue', 'failed'], output_keys = ['part'])
+		super(setPart,self).__init__(input_keys = ['part_Type','gasket','piston','gear'],outcomes = ['continue', 'failed'], output_keys = ['part'])
 
 
 	def execute(self, userdata):
-            if userdata.partType == "gasket_part":
+            if userdata.partType == 'gasket_part':
                 userdata.part=userdata.gasket
-            elif userdata.partType == "piston_part":
+            elif userdata.partType == 'piston_rod_part':
                 userdata.part=userdata.piston
-            elif userdata.partType == "gear_part":
+            elif userdata.partType == 'gear_part':
                 userdata.part=userdata.gear
             else :
                 Logger.logwarn("partType didn't match")

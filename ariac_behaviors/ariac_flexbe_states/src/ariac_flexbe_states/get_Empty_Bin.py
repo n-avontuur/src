@@ -31,8 +31,6 @@ class getEmptyBin(EventState):
 			return 'failed'
 
 	def on_enter(self, userdata):
-		self._binPartType = ['','']
-		self._binPartType = userdata.binPartType
 		pass
 
 	def on_exit(self, userdata):

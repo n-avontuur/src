@@ -99,21 +99,15 @@ class DetectTotalPartCameraAriacState(EventState):
 			return 'time_out'
 		if self._sub.has_msg(self._topic):
 			message = self._sub.get_last_msg(self._topic)
-			userdata.numberOfModels = len(message.models)
-			Logger.loginfo(userdata.numberOfModels)
+			i =0
 			for model in message.models:
-				if model.type == userdata.part:
-					pose = PoseStamped()
-					pose.pose = model.pose
-					pose.header.frame_id = self._camera_frame
-					pose.header.stamp = rospy.Time.now()
-					# Transform the pose to desired output frame
-					pose = tf2_geometry_msgs.do_transform_pose(pose, self._transform)
-					userdata.pose = pose
-					return 'continue'
-			userdata.pose = None
-			return 'not_found'
+				i += 1
+			userdata.numberOfModels = i
+			if i == 0:
+				userdata.numberOfModels = None
+				return 'not_found'
 
+			
 	def on_enter(self, userdata):
 		# This method is called when the state becomes active, i.e. a transition from another state to this one is taken.
 		# It is primarily used to start actions which are associated with this state.
@@ -129,7 +123,7 @@ class DetectTotalPartCameraAriacState(EventState):
 		(msg_path, msg_topic, fn) = rostopic.get_topic_type(self._topic)
 
 		if msg_topic == self._topic:
-			msg_type = self._get_msg_from_path(msg_path)
+			msg_type = self._get_msg_from_path(msg_path)  
 			self._sub = ProxySubscriberCached({self._topic: msg_type})
 			self._connected = True
 		else:
@@ -167,7 +161,7 @@ class DetectTotalPartCameraAriacState(EventState):
 		'''
 		Created on 11.06.2013
 
-		@author: Philipp Schillinger
+		@author:  
 		'''
 		msg_import = msg_path.split('/')
 		msg_module = '%s.msg' % (msg_import[0])

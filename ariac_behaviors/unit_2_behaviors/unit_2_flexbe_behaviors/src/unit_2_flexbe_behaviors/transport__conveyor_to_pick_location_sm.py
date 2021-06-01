@@ -8,8 +8,8 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
+from ariac_flexbe_states.detect_first_part_camera_ariac_state import DetectFirstPartCameraAriacState
 from ariac_flexbe_states.set_conveyorbelt_power_state import SetConveyorbeltPowerState
-from ariac_flexbe_states.start_assignment_state import StartAssignment
 from flexbe_states.subscriber_state import SubscriberState
 from flexbe_states.wait_state import WaitState
 # Additional imports can be added inside the following tags
@@ -47,10 +47,16 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 
 	def create(self):
 		breakbeam = "/ariac/break_beam_1_change"
-		# x:1363 y:79, x:578 y:357
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
+		part_list = ['gasket_part', 'piston_rod_part', 'gear_part', ' pulley_part', 'disk_part']
+		# x:1612 y:75, x:578 y:357
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], output_keys=['pick_Pose', 'part_Type'])
 		_state_machine.userdata.powerOFF = 0
 		_state_machine.userdata.powerON = 100
+		_state_machine.userdata.part_Type = ''
+		_state_machine.userdata.pick_Pose = []
+		_state_machine.userdata.ref_frame = 'world'
+		_state_machine.userdata.camera_topic = '/ariac/logical_camera_1'
+		_state_machine.userdata.camera_frame = 'logical_camera_1_frame'
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -59,19 +65,6 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 
 
 		with _state_machine:
-			# x:97 y:63
-			OperatableStateMachine.add('startAssignment',
-										StartAssignment(),
-										transitions={'continue': 'conveyorON'},
-										autonomy={'continue': Autonomy.Off})
-
-			# x:828 y:69
-			OperatableStateMachine.add('conveyorOFF',
-										SetConveyorbeltPowerState(),
-										transitions={'continue': 'finished', 'fail': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
-										remapping={'power': 'powerOFF'})
-
 			# x:301 y:62
 			OperatableStateMachine.add('conveyorON',
 										SetConveyorbeltPowerState(),
@@ -79,13 +72,27 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'power': 'powerON'})
 
-			# x:506 y:51
+			# x:831 y:111
+			OperatableStateMachine.add('conveyorOFF',
+										SetConveyorbeltPowerState(),
+										transitions={'continue': 'detectPartOnConveyor', 'fail': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
+										remapping={'power': 'powerOFF'})
+
+			# x:1055 y:52
+			OperatableStateMachine.add('detectPartOnConveyor',
+										DetectFirstPartCameraAriacState(part_list=part_list, time_out=0.5),
+										transitions={'continue': 'finished', 'failed': 'failed', 'not_found': 'conveyorON'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'not_found': Autonomy.Off},
+										remapping={'ref_frame': 'ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part_Type', 'pose': 'pick_Pose'})
+
+			# x:511 y:106
 			OperatableStateMachine.add('wait',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'checkBreamBeam'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:653 y:60
+			# x:637 y:102
 			OperatableStateMachine.add('checkBreamBeam',
 										SubscriberState(topic=breakbeam, blocking=True, clear=True),
 										transitions={'received': 'conveyorOFF', 'unavailable': 'failed'},
