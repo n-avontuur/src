@@ -65,12 +65,11 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 
 
 		with _state_machine:
-			# x:301 y:62
-			OperatableStateMachine.add('conveyorON',
-										SetConveyorbeltPowerState(),
-										transitions={'continue': 'wait', 'fail': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
-										remapping={'power': 'powerON'})
+			# x:138 y:59
+			OperatableStateMachine.add('wait_2',
+										WaitState(wait_time=0.5),
+										transitions={'done': 'conveyorON'},
+										autonomy={'done': Autonomy.Off})
 
 			# x:831 y:111
 			OperatableStateMachine.add('conveyorOFF',
@@ -78,6 +77,13 @@ class transport_conveyor_to_pick_locationSM(Behavior):
 										transitions={'continue': 'detectPartOnConveyor', 'fail': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'power': 'powerOFF'})
+
+			# x:301 y:62
+			OperatableStateMachine.add('conveyorON',
+										SetConveyorbeltPowerState(),
+										transitions={'continue': 'wait', 'fail': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
+										remapping={'power': 'powerON'})
 
 			# x:1055 y:52
 			OperatableStateMachine.add('detectPartOnConveyor',

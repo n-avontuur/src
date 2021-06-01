@@ -95,17 +95,16 @@ class DetectTotalPartCameraAriacState(EventState):
 			return 'failed'
 
 		elapsed = rospy.get_rostime() - self._start_time;
-		if (elapsed.to_sec() > self._wait):
-			return 'time_out'
 		if self._sub.has_msg(self._topic):
 			message = self._sub.get_last_msg(self._topic)
 			i =0
 			for model in message.models:
 				i += 1
-			userdata.numberOfModels = i
 			if i == 0:
 				userdata.numberOfModels = None
 				return 'not_found'
+			userdata.numberOfModels = i 
+			return 'continue'
 
 			
 	def on_enter(self, userdata):

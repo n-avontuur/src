@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import copy
 import rospy
 from std_msgs.msg import String
 from flexbe_core import EventState, Logger
@@ -18,18 +19,19 @@ class setPart(EventState):
 
 
 	def execute(self, userdata):
-            if userdata.partType == 'gasket_part':
-                userdata.part=userdata.gasket
-            elif userdata.partType == 'piston_rod_part':
-                userdata.part=userdata.piston
-            elif userdata.partType == 'gear_part':
-                userdata.part=userdata.gear
-            else :
-                Logger.logwarn("partType didn't match")
-                return 'failed'
-            return 'continue'
+		if self._part_Type == 'gasket_part':
+			userdata.part=copy.deepcopy(userdata.gasket)
+		elif self._part_Type == 'piston_rod_part':
+			userdata.part=copy.deepcopy(userdata.piston)
+		elif self._part_Type == 'gear_part':
+			userdata.part=copy.deepcopy(userdata.gear)
+		else :
+			Logger.logwarn("part_Type didn't match")
+			return 'failed'
+		return 'continue'
 
 	def on_enter(self, userdata):
+		self._part_Type= userdata.part_Type
 		pass
 
 	def on_exit(self, userdata):

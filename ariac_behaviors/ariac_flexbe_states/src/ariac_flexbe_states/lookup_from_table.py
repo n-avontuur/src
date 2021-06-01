@@ -77,14 +77,14 @@ class LookupFromTableState(EventState):
         if not self._param_error:
             for tables in self._tables.iter('tables'):
                 for table in tables.iter('table'):
-                    #Logger.logwarn(table.attrib['name'])
+                    #Logger.loginfo(table.attrib['name'])
                     if self._table_name == table.attrib['name']:
                         for index_column in table.iter(self._index_title):
-                            #Logger.logwarn(index_column.attrib['name'])
+                            #Logger.loginfo(index_column.attrib['name'])
                             if userdata.index_value == index_column.attrib['name']:
-                                #Logger.logwarn("Found")
+                                Logger.loginfo("Found")
                                 for column in index_column.iter(self._column_title):
-                                    #Logger.logwarn(column.attrib['value'])
+                                    Logger.loginfo(column.attrib['value'])
                                     userdata.column_value = column.attrib['value']
                                     braek_flag = True
                                     break
@@ -97,7 +97,7 @@ class LookupFromTableState(EventState):
                 
 						
         if not userdata.column_value:
-            Logger.logwarn('Did not found item in lookup table')
+            Logger.logwarn('Did not found column_value in lookup table')
             self._param_error     = True
             return
 

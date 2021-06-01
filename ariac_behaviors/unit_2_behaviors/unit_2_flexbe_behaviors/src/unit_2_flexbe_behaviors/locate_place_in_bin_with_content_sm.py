@@ -10,6 +10,7 @@
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.detect_total_part_camera_ariac_state import DetectTotalPartCameraAriacState
 from ariac_flexbe_states.lookup_from_table import LookupFromTableState
+from ariac_flexbe_states.message_state import MessageState
 from ariac_flexbe_states.select_Robot import selectRobot
 from ariac_flexbe_states.set_Part import setPart
 from ariac_flexbe_states.set_new_position import setNewPosePart
@@ -48,14 +49,14 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 
 
 	def create(self):
-		parameter_name = 'ariac_tables_unit2'
+		parameter_name = '/ariac_tables_unit2'
 		# x:27 y:280, x:243 y:253, x:608 y:437
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'not_found'], input_keys=['bin', 'part_Type', 'gear', 'gasket', 'piston'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type', 'gear', 'gasket', 'piston'])
-		_state_machine.userdata.bin = 'bin3'
+		_state_machine.userdata.bin = ''
 		_state_machine.userdata.ref_frame = 'world'
 		_state_machine.userdata.PreDrop_config = ''
 		_state_machine.userdata.drop_pose = []
-		_state_machine.userdata.part_Type = 'piston_rod_part'
+		_state_machine.userdata.part_Type = ''
 		_state_machine.userdata.gear = []
 		_state_machine.userdata.piston = []
 		_state_machine.userdata.gasket = []
@@ -127,6 +128,13 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_topic'})
 
+			# x:427 y:41
+			OperatableStateMachine.add('sendBin',
+										MessageState(),
+										transitions={'continue': 'useR1'},
+										autonomy={'continue': Autonomy.Off},
+										remapping={'message': 'bin'})
+
 			# x:14 y:457
 			OperatableStateMachine.add('setNewPose',
 										setNewPosePart(),
@@ -137,7 +145,7 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 			# x:236 y:74
 			OperatableStateMachine.add('setPartWithPartType',
 										setPart(),
-										transitions={'continue': 'useR1', 'failed': 'failed'},
+										transitions={'continue': 'sendBin', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part': 'part_Contect'})
 

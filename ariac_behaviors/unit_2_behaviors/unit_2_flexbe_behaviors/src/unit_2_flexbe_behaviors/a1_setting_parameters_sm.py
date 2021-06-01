@@ -49,7 +49,7 @@ class a1_setting_ParametersSM(Behavior):
 
 	def create(self):
 		# x:959 y:203, x:205 y:409
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type', 'gear', 'gasket', 'piston', 'bin'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content', 'bin'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type', 'gear', 'gasket', 'piston', 'bin'])
 		_state_machine.userdata.part_Type = ''
 		_state_machine.userdata.zero = 0
 		_state_machine.userdata.drop_pose = []
@@ -93,8 +93,8 @@ class a1_setting_ParametersSM(Behavior):
 			# x:440 y:143
 			OperatableStateMachine.add('Locate_Place_In_Empty_Bin',
 										self.use_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin'),
-										transitions={'finished': 'finished', 'failed': 'failed'},
-										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
+										transitions={'finished': 'finished', 'failed': 'failed', 'bin_Full': 'failed'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'bin_Full': Autonomy.Inherit},
 										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'drop_pose': 'drop_pose', 'pose_offset': 'pose_offset', 'PreDrop_config': 'PreDrop_config', 'robot_Name': 'robot_Name'})
 
 

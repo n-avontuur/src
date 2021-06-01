@@ -26,6 +26,8 @@ class getEmptyBin(EventState):
 					userdata.bin_frame = 'bin'+ str(i) + '_frame'
 					Logger.loginfo('Empty bin :'+ userdata.bin)
 					return 'continue'
+				else :
+					return 'failed'
 		except :
 			Logger.logwarn("An exception occurred")
 			return 'failed'
