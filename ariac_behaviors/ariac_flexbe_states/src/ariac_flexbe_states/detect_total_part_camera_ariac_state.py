@@ -72,7 +72,7 @@ class DetectTotalPartCameraAriacState(EventState):
 
 	def __init__(self, time_out = 0.5):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
-		super(DetectTotalPartCameraAriacState, self).__init__(outcomes = ['continue', 'failed', 'not_found'], input_keys = ['ref_frame', 'camera_topic', 'camera_frame', 'part'], output_keys = ['pose','numberOfModels'])
+		super(DetectTotalPartCameraAriacState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['ref_frame', 'camera_topic', 'camera_frame', 'part'], output_keys = ['pose','numberOfModels'])
 
 		# Store state parameter for later use.
 		self._wait = time_out
@@ -100,9 +100,6 @@ class DetectTotalPartCameraAriacState(EventState):
 			i =0
 			for model in message.models:
 				i += 1
-			if i == 0:
-				userdata.numberOfModels = None
-				return 'not_found'
 			userdata.numberOfModels = i 
 			return 'continue'
 

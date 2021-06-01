@@ -14,12 +14,9 @@ class setFirstTimePart(EventState):
 
 
 	def execute(self, userdata):
-		userdata.gasket=[(0,0,0),(0.15,0.10,0.035),(0),(4,3)]
-		userdata.piston=[(0,0,0),(0.11,0.11,0.020),(0),(3,3)]
-		userdata.gear=[(0,0,0),(0.13,0.10,0.025),(0),(3,2)]
-		Logger.loginfo(userdata.gasket)
-		Logger.loginfo(userdata.piston)
-		Logger.loginfo(userdata.gear)
+		userdata.gasket=[[0,0,0],[0.15,0.10,0.035],[0],[3,2]]
+		userdata.piston=[[0,0,0],[0.11,0.11,0.020],[0],[3,3]]
+		userdata.gear=[[0,0,0],[0.13,0.10,0.025],[0],[3,2]]
 		return 'continue'
 
 	def on_enter(self, userdata):

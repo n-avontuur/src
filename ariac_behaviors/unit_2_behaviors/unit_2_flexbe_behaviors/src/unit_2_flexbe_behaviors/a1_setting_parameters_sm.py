@@ -48,8 +48,8 @@ class a1_setting_ParametersSM(Behavior):
 
 
 	def create(self):
-		# x:959 y:203, x:205 y:409
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content', 'bin'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type', 'gear', 'gasket', 'piston', 'bin'])
+		# x:1154 y:207, x:780 y:242
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'gear', 'gasket', 'piston'])
 		_state_machine.userdata.part_Type = ''
 		_state_machine.userdata.zero = 0
 		_state_machine.userdata.drop_pose = []
@@ -61,6 +61,7 @@ class a1_setting_ParametersSM(Behavior):
 		_state_machine.userdata.gear = []
 		_state_machine.userdata.bin_Content = []
 		_state_machine.userdata.bin = ''
+		_state_machine.userdata.part_Content = []
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -83,14 +84,14 @@ class a1_setting_ParametersSM(Behavior):
 										autonomy={'done': Autonomy.Off, 'invalid_index': Autonomy.Off},
 										remapping={'list': 'locations', 'index': 'zero', 'item': 'bin'})
 
-			# x:442 y:42
+			# x:436 y:136
 			OperatableStateMachine.add('locate_Place_In_Bin_With_Content',
 										self.use_behavior(locate_Place_In_Bin_With_ContentSM, 'locate_Place_In_Bin_With_Content'),
-										transitions={'finished': 'finished', 'failed': 'failed', 'not_found': 'failed'},
+										transitions={'finished': 'finished', 'failed': 'failed', 'not_found': 'Locate_Place_In_Empty_Bin'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'not_found': Autonomy.Inherit},
 										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'gear': 'gear', 'gasket': 'gasket', 'piston': 'piston', 'drop_pose': 'drop_pose', 'pose_offset': 'pose_offset', 'PreDrop_config': 'PreDrop_config', 'robot_Name': 'robot_Name'})
 
-			# x:440 y:143
+			# x:441 y:369
 			OperatableStateMachine.add('Locate_Place_In_Empty_Bin',
 										self.use_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin'),
 										transitions={'finished': 'finished', 'failed': 'failed', 'bin_Full': 'failed'},

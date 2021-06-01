@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import String
-from flexbe_core import EventState, Logger
+from flexbe_core import EventState, Logger, logger
 
 
 class setNewPosePart(EventState):
@@ -14,49 +14,52 @@ class setNewPosePart(EventState):
 		super(setNewPosePart,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['part_Content','pose_offset'])
 
 	def on_enter(self, userdata):
-		self._offset_x=userdata.part_Content[0][0]
-		self._offset_y=userdata.part_Content[0][1]
-		self._offset_z=userdata.part_Content[0][2]
-		self._numberParts=userdata.part_Content[0][0]
-		self._maxNumberPartsX=userdata.part_Content[0][0]
-		self._maxNumberPartsY=userdata.part_Content[0][1]
-		self._offsetSize_x=userdata.part_Content[0][0]
-		self._offsetSize_y=userdata.part_Content[0][1]
-		self._offsetSize_z=userdata.part_Content[0][2]
+		offset=userdata.part_Content[0]
+		self._offset_x=offset[0]
+		self._offset_y=offset[1]
+		self._offset_z=offset[2]
+
+		offsetSize=userdata.part_Content[1]
+		self._offsetSize_x=offsetSize[0]
+		self._offsetSize_y=offsetSize[1]
+		self._offsetSize_z=offsetSize[2]
+
+		numberParts=userdata.part_Content[2]
+		self._numberParts=(numberParts)
+
+		maxNumberParts=userdata.part_Content[3]
+		self._maxNumberPartsX=maxNumberParts[0]
+		self._maxNumberPartsY=maxNumberParts[1]
+		
 		pass
 
 
 	def execute(self, userdata):
-		matrix =[self._maxNumberPartsX][self._maxNumberPartsY]
-		if (self._numberParts+1) ==  (self._maxNumberPartsX * self._maxNumberPartsY):
+		max_X=self._maxNumberPartsX
+		max_Y=self._maxNumberPartsY
+		matrix = [max_X][max_Y]
+		if self._numberParts == (max_X * max_Y):
 			self._numberParts = 0
 			return 'bin_Full'
 		x,y = matrix(self._numberParts)
-		Logger.loginfo('x: ' + x)
-		Logger.loginfo('y: ' + y)
 		if x==0 and y==0:
 			self._offset_y-=self._offsetSize_x
 			self._offset_x-=self._offsetSize_y
 			pass
-		if x<self._maxNumberPartsX:
+		if x<max_X:
 			self._offset_x+=self._offsetSize_x
 			pass
-		if x==self._maxNumberPartsX:
+		if x==max_X:
 			self._offset_y+=self._offsetSize_y
 		return 'continue'
 
 	def on_exit(self, userdata):
-		userdata.part_Content[0][0]=self._offset_x
-		userdata.part_Content[0][1]=self._offset_y
-		userdata.part_Content[0][2]=self._offset_z
-		userdata.part_Content[1][0]=self._numberParts
-		userdata.part_Content[2][0]=self._maxNumberPartsX
-		userdata.part_Content[2][1]=self._maxNumberPartsY
-		userdata.part_Content[3][0]=self._offsetSize_x
-		userdata.part_Content[3][1]=self._offsetSize_y
-		userdata.part_Content[3][2]=self._offsetSize_z
-		userdata.pose = [self._offset_x, self._offset_y, self._offset_z]
-		Logger.loginfo('pose: ' + userdata.pose)
+		offset = [self._offset_x,self._offset_y,self._offset_z]
+		userdata.part_Content[0]=offset
+		offsetSize = [self._offsetSize_x,self._offsetSize_y,self._offsetSize_z]
+		userdata.part_Content[1]=offsetSize
+		maxNumber=[self._maxNumberPartsX,self._maxNumberPartsY]
+		userdata.part_Content[3]=maxNumber
 		pass
 
 	def on_start(self):

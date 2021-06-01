@@ -30,9 +30,6 @@ class selectRobot(EventState):
 			userdata.robot_name='arm2'
 		elif userdata.bin == "bin1":
 			userdata.robot_name='arm2'
-		else :
-			Logger.logwarn("select robot : An exception occurred")
-			return 'failed'
 		return 'continue'
 
 	def on_enter(self, userdata):

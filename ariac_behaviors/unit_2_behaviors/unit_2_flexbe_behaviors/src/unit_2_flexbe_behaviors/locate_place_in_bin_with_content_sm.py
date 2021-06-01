@@ -10,9 +10,9 @@
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.detect_total_part_camera_ariac_state import DetectTotalPartCameraAriacState
 from ariac_flexbe_states.lookup_from_table import LookupFromTableState
-from ariac_flexbe_states.message_state import MessageState
 from ariac_flexbe_states.select_Robot import selectRobot
 from ariac_flexbe_states.set_Part import setPart
+from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.set_new_position import setNewPosePart
 from ariac_support_flexbe_states.equal_state import EqualState
 # Additional imports can be added inside the following tags
@@ -50,19 +50,15 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
-		# x:27 y:280, x:243 y:253, x:608 y:437
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'not_found'], input_keys=['bin', 'part_Type', 'gear', 'gasket', 'piston'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type', 'gear', 'gasket', 'piston'])
-		_state_machine.userdata.bin = ''
+		# x:27 y:280, x:243 y:253, x:580 y:384
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'not_found'], input_keys=['bin', 'part_Type'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type'])
+		_state_machine.userdata.bin = 'bin4'
 		_state_machine.userdata.ref_frame = 'world'
 		_state_machine.userdata.PreDrop_config = ''
 		_state_machine.userdata.drop_pose = []
-		_state_machine.userdata.part_Type = ''
-		_state_machine.userdata.gear = []
-		_state_machine.userdata.piston = []
-		_state_machine.userdata.gasket = []
+		_state_machine.userdata.part_Type = 'gear_part'
 		_state_machine.userdata.robot_Name = ' '
 		_state_machine.userdata.robot1_Name = 'arm1'
-		_state_machine.userdata.part_Content = []
 		_state_machine.userdata.pose_offset = []
 
 		# Additional creation code can be added inside the following tags
@@ -75,65 +71,58 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 			# x:49 y:60
 			OperatableStateMachine.add('selectRobot',
 										selectRobot(),
-										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
+										transitions={'continue': 'setPartFirstTime', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'bin': 'bin', 'robot_name': 'robot_Name'})
 
-			# x:623 y:527
+			# x:1014 y:470
 			OperatableStateMachine.add('detectNumberOfParts_2',
 										DetectTotalPartCameraAriacState(time_out=0.5),
-										transitions={'continue': 'getPreGraspR2', 'failed': 'failed', 'not_found': 'not_found'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'not_found': Autonomy.Off},
+										transitions={'continue': 'getPreGraspR2', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'ref_frame': 'ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part_Type', 'pose': 'pose', 'numberOfModels': 'numberOfModels'})
 
-			# x:199 y:419
+			# x:176 y:592
 			OperatableStateMachine.add('getPreGraspR1',
-										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R2', index_title='bin', column_title='robot_config'),
-										transitions={'found': 'setNewPose', 'not_found': 'failed'},
-										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
-										remapping={'index_value': 'bin', 'column_value': 'PreDrop_config'})
-
-			# x:330 y:497
-			OperatableStateMachine.add('getPreGraspR2',
 										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='robot_config'),
 										transitions={'found': 'setNewPose', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'PreDrop_config'})
 
-			# x:508 y:139
+			# x:577 y:661
+			OperatableStateMachine.add('getPreGraspR2',
+										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R2', index_title='bin', column_title='robot_config'),
+										transitions={'found': 'setNewPose', 'not_found': 'failed'},
+										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
+										remapping={'index_value': 'bin', 'column_value': 'PreDrop_config'})
+
+			# x:709 y:117
 			OperatableStateMachine.add('lookUpCarmeraFrame',
 										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='camera_frame'),
 										transitions={'found': 'lookUpCarmeraTopic', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_frame'})
 
-			# x:712 y:318
+			# x:1045 y:318
 			OperatableStateMachine.add('lookUpCarmeraFrame_2',
 										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='camera_frame'),
 										transitions={'found': 'lookUpCarmeraTopic_2', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_frame'})
 
-			# x:506 y:199
+			# x:708 y:185
 			OperatableStateMachine.add('lookUpCarmeraTopic',
 										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='camera_topic'),
 										transitions={'found': 'detectNumberOfParts', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_topic'})
 
-			# x:705 y:390
+			# x:1052 y:385
 			OperatableStateMachine.add('lookUpCarmeraTopic_2',
 										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='camera_topic'),
 										transitions={'found': 'detectNumberOfParts_2', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_topic'})
-
-			# x:427 y:41
-			OperatableStateMachine.add('sendBin',
-										MessageState(),
-										transitions={'continue': 'useR1'},
-										autonomy={'continue': Autonomy.Off},
-										remapping={'message': 'bin'})
 
 			# x:14 y:457
 			OperatableStateMachine.add('setNewPose',
@@ -142,25 +131,32 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
 										remapping={'part_Content': 'part_Content', 'pose_offset': 'pose_offset'})
 
-			# x:236 y:74
+			# x:202 y:48
+			OperatableStateMachine.add('setPartFirstTime',
+										setFirstTimePart(),
+										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
+
+			# x:368 y:73
 			OperatableStateMachine.add('setPartWithPartType',
 										setPart(),
-										transitions={'continue': 'sendBin', 'failed': 'failed'},
+										transitions={'continue': 'useR1', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part': 'part_Contect'})
+										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part_Content': 'part_Content'})
 
-			# x:635 y:42
+			# x:938 y:54
 			OperatableStateMachine.add('useR1',
 										EqualState(),
 										transitions={'true': 'lookUpCarmeraFrame', 'false': 'lookUpCarmeraFrame_2'},
 										autonomy={'true': Autonomy.Off, 'false': Autonomy.Off},
 										remapping={'value_a': 'robot_Name', 'value_b': 'robot1_Name'})
 
-			# x:467 y:261
+			# x:721 y:255
 			OperatableStateMachine.add('detectNumberOfParts',
 										DetectTotalPartCameraAriacState(time_out=0.5),
-										transitions={'continue': 'getPreGraspR1', 'failed': 'failed', 'not_found': 'not_found'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'not_found': Autonomy.Off},
+										transitions={'continue': 'getPreGraspR1', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'ref_frame': 'ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part_Type', 'pose': 'pose', 'numberOfModels': 'numberOfModels'})
 
 

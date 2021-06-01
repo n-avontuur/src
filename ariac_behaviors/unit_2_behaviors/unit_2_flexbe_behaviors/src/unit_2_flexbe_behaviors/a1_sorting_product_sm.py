@@ -8,8 +8,6 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from ariac_flexbe_states.select_Robot import selectRobot
-from ariac_flexbe_states.set_Part import setPart
 from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.start_assignment_state import StartAssignment
 from unit_2_flexbe_behaviors.a1_move_robot_sm import a1_Move_RobotSM
@@ -59,11 +57,12 @@ class a1_Sorting_ProductSM(Behavior):
 		_state_machine.userdata.piston = []
 		_state_machine.userdata.gear = []
 		_state_machine.userdata.part_Content = []
-		_state_machine.userdata.part_Type = ''
-		_state_machine.userdata.bin = ''
+		_state_machine.userdata.part_Type = ' '
+		_state_machine.userdata.bin = ' '
 		_state_machine.userdata.pick_rotation = []
 		_state_machine.userdata.preDrop_Config = ''
 		_state_machine.userdata.pick_offset = []
+		_state_machine.userdata.pick_Pose = []
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -78,42 +77,28 @@ class a1_Sorting_ProductSM(Behavior):
 										transitions={'continue': 'setFirstTimePart'},
 										autonomy={'continue': Autonomy.Off})
 
-			# x:933 y:47
+			# x:655 y:116
 			OperatableStateMachine.add('a1_setting_Parameters',
 										self.use_behavior(a1_setting_ParametersSM, 'a1_setting_Parameters'),
-										transitions={'finished': 'select_Robot', 'failed': 'failed'},
+										transitions={'finished': 'a1_Move_Robot', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
-										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'drop_pose': 'drop_Pose', 'pose_offset': 'drop_Offset', 'PreDrop_config': 'preDrop_config', 'robot_Name': 'robot_Name', 'bin': 'bin'})
+										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'drop_pose': 'drop_Pose', 'pose_offset': 'drop_Offset', 'PreDrop_config': 'preDrop_config', 'robot_Name': 'robot_Name'})
 
-			# x:950 y:163
-			OperatableStateMachine.add('select_Robot',
-										selectRobot(),
-										transitions={'continue': 'a1_Move_Robot', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'bin': 'bin', 'robot_name': 'robot_name'})
-
-			# x:243 y:19
+			# x:78 y:113
 			OperatableStateMachine.add('setFirstTimePart',
 										setFirstTimePart(),
 										transitions={'continue': 'transport_ conveyor_to_pick_location', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
 
-			# x:747 y:29
-			OperatableStateMachine.add('set_PartContent',
-										setPart(),
-										transitions={'continue': 'a1_setting_Parameters', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part': 'part_Content'})
-
-			# x:414 y:18
+			# x:241 y:112
 			OperatableStateMachine.add('transport_ conveyor_to_pick_location',
 										self.use_behavior(transport_conveyor_to_pick_locationSM, 'transport_ conveyor_to_pick_location'),
-										transitions={'finished': 'set_PartContent', 'failed': 'failed'},
+										transitions={'finished': 'a1_setting_Parameters', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'pick_Pose': 'pick_Pose', 'part_Type': 'part_Type'})
 
-			# x:537 y:294
+			# x:396 y:419
 			OperatableStateMachine.add('a1_Move_Robot',
 										self.use_behavior(a1_Move_RobotSM, 'a1_Move_Robot'),
 										transitions={'finished': 'finished', 'failed': 'failed'},

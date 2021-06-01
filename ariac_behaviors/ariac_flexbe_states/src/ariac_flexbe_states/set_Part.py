@@ -15,16 +15,16 @@ class setPart(EventState):
 	'''
 
 	def __init__(self):
-		super(setPart,self).__init__(input_keys = ['part_Type','gasket','piston','gear'],outcomes = ['continue', 'failed'], output_keys = ['part'])
+		super(setPart,self).__init__(input_keys = ['part_Type','gasket','piston','gear'],outcomes = ['continue', 'failed'], output_keys = ['part_Content'])
 
 
 	def execute(self, userdata):
 		if self._part_Type == 'gasket_part':
-			userdata.part=copy.deepcopy(userdata.gasket)
+			userdata.part_Content=copy.deepcopy(userdata.gasket)
 		elif self._part_Type == 'piston_rod_part':
-			userdata.part=copy.deepcopy(userdata.piston)
+			userdata.part_Content=copy.deepcopy(userdata.piston)
 		elif self._part_Type == 'gear_part':
-			userdata.part=copy.deepcopy(userdata.gear)
+			userdata.part_Content=copy.deepcopy(userdata.gear)
 		else :
 			Logger.logwarn("part_Type didn't match")
 			return 'failed'

@@ -13,6 +13,7 @@ from ariac_flexbe_states.get_object_pose import GetObjectPoseState
 from ariac_flexbe_states.lookup_from_table import LookupFromTableState
 from ariac_flexbe_states.select_Robot import selectRobot
 from ariac_flexbe_states.set_Part import setPart
+from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.set_new_position import setNewPosePart
 from ariac_support_flexbe_states.equal_state import EqualState
 # Additional imports can be added inside the following tags
@@ -77,7 +78,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 			# x:73 y:80
 			OperatableStateMachine.add('getEmptyBin',
 										getEmptyBin(),
-										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
+										transitions={'continue': 'setFirstTimeParts', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'binPartType': 'bin_Content', 'bin': 'bin', 'bin_frame': 'bin_frame', 'robot_name': 'robot_name'})
 
@@ -95,12 +96,19 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'PreDrop_config'})
 
-			# x:493 y:82
+			# x:668 y:114
 			OperatableStateMachine.add('selectRobot',
 										selectRobot(),
 										transitions={'continue': 'getBinPose', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'bin': 'bin', 'robot_name': 'robot_name'})
+
+			# x:313 y:58
+			OperatableStateMachine.add('setFirstTimeParts',
+										setFirstTimePart(),
+										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
 
 			# x:152 y:390
 			OperatableStateMachine.add('setNewOffsetPosition',
@@ -109,12 +117,12 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
 										remapping={'part_Content': 'part_Content', 'pose_offset': 'pose_offset'})
 
-			# x:276 y:78
+			# x:635 y:43
 			OperatableStateMachine.add('setPartWithPartType',
 										setPart(),
 										transitions={'continue': 'selectRobot', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part': 'part_Content'})
+										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'part_Content': 'part_Content'})
 
 			# x:682 y:391
 			OperatableStateMachine.add('useR1',
