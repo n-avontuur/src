@@ -61,15 +61,15 @@ class testList(EventState):
 			self._numberParts = 0
 			return 'bin_Full'
 		for i in range(max_Y):
-			while j < max_X:
+			for u in range(max_X):
 				new = j+1
-				col.append(new)
 				j+=1
+				col.append(new)
 				Logger.logwarn('New j')
-			Logger.logwarn('New i')
-			row.append(col)
-			liststr = ' '.join([str(elem) for elem in row])
+			liststr = ' '.join([str(elem) for elem in col])
 			Logger.loginfo('col:'+liststr)
+			Logger.logwarn('New i')
+			row.append(col)	
 		Logger.loginfo('j:'+str(j))
 		Logger.loginfo('i:'+str(i))
 		liststr = ' '.join([str(elem) for elem in row])
