@@ -74,8 +74,8 @@ class Test_listSM(Behavior):
 			# x:488 y:45
 			OperatableStateMachine.add('testList',
 										testList(),
-										transitions={'continue': 'finished', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
 										remapping={'part_Content': 'part_Content', 'pose_offset': 'pose_offset'})
 
 

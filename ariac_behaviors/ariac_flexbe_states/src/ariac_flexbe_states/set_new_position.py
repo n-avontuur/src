@@ -35,6 +35,7 @@ class setNewPosePart(EventState):
 
 
 	def execute(self, userdata):
+		
 		max_X=self._maxNumberPartsX
 		max_Y=self._maxNumberPartsY
 		matrix = [max_X][max_Y]

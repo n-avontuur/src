@@ -12,7 +12,7 @@ class testList(EventState):
 	'''
 
 	def __init__(self):
-		super(testList,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed'], output_keys = ['part_Content','pose_offset'])
+		super(testList,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['part_Content','pose_offset'])
 
 	def on_enter(self, userdata):
 		try:
@@ -33,7 +33,7 @@ class testList(EventState):
 
 		try:	
 			numberParts=userdata.part_Content[2]
-			self._numberParts=(numberParts)
+			self._numberParts=numberParts[0]
 		except:
 			Logger.logwarn('numberparts not correct')
 
@@ -50,33 +50,42 @@ class testList(EventState):
 	def execute(self, userdata,):
 		max_X=self._maxNumberPartsX
 		max_Y=self._maxNumberPartsY
-		if self._numberParts == (max_X * max_Y):
-			self._numberParts = 0
-			return 'bin_Full'
-		try:	
-			i =0
-			col=[]
-			row=[]
-			if (i < max_X):
-				row.append(col)
-				i+=1
-				j = 0
-				if (j < max_Y):
-					col.append(j)
-					j += 1
+		i = 0
+		j = 0
+		col=[]
+		row=[]
+		Logger.loginfo("maxXnumer:"+str(max_X))
+		Logger.loginfo("maxYnumer:"+str(max_Y))
+		Logger.loginfo("Number of part :"+ str(self._numberParts))
+		try:
+			if self._numberParts == (max_X * max_Y):
+				self._numberParts = 0
+				return 'bin_Full'
+			while i < max_X:
+				row.append([])
+				while j < max_Y:
+					row[i].append(j+1)
+				j += 1
+				i += 1
+			Logger.loginfo('j:'+str(j))
+			Logger.loginfo('i:'+str(i))
 			liststr = ' '.join([str(elem) for elem in row])
-			Logger.loginfo(liststr)
+			Logger.loginfo('row:'+liststr)
 		except:
-			Logger.logwarn('making matrix went wrong')
-		for p,v in enumerate(col):
-			value=self._numberParts
-			if value in v:
-				p+1
-				v.index(value)+1
-			x=p-1
-			y=v.index(value)-1
-			Logger.loginfo(str('col'+x))
-			Logger.loginfo(str('row'+y))
+			Logger.logwarn('matrix not correct made')
+
+		try:
+			for p,row in enumerate(row):
+				value=self._numberParts
+				for value in row:
+					p+1
+					row.index(value)+1
+				x=p-1
+				y=row.index(value)-1
+				Logger.loginfo(str('col'+x))
+				Logger.loginfo(str('row'+y))
+		except:
+			Logger.logwarn('Looking true the matrix went wrong')
 		try:
 			if x==0 and y==0:
 				self._offset_y-=self._offsetSize_x
@@ -88,7 +97,8 @@ class testList(EventState):
 			if x==max_X:
 				self._offset_y+=self._offsetSize_y
 		except:
-			Logger.logwarn('2')
+			Logger.logwarn('Error in setting new offset')
+		Logger.logwarn("end of state")
 		return 'continue'
 
 	def on_exit(self, userdata):
