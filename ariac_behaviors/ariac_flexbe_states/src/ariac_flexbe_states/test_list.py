@@ -12,24 +12,20 @@ class testList(EventState):
 	'''
 
 	def __init__(self):
-		super(testList,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['part_Content','pose_offset'])
+		super(testList,self).__init__(input_keys = ['part_Content'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['offset'])
 
 	def on_enter(self, userdata):
 		try:
 			offset=userdata.part_Content[0]
-			self._offset_x=offset[0]
-			self._offset_y=offset[1]
-			self._offset_z=offset[2]
+			self._offset=offset[0]
 		except:
-			Logger.logwarn('offset not correct' )
+			Logger.logwarn('offsetX or Y not correct' )
 
 		try:
-			offsetSize=userdata.part_Content[1]
-			self._offsetSize_x=offsetSize[0]
-			self._offsetSize_y=offsetSize[1]
-			self._offsetSize_z=offsetSize[2]
+			offset_z=userdata.part_Content[1]		
+			self._offset_z=offset_z[0]
 		except:
-			Logger.logwarn('offsetSize not correct')
+			Logger.logwarn('offsetZ not correct')
 
 		try:	
 			numberParts=userdata.part_Content[2]
@@ -48,66 +44,48 @@ class testList(EventState):
 
 
 	def execute(self, userdata):
+		x=0
+		y=0
 		max_X=self._maxNumberPartsX
 		max_Y=self._maxNumberPartsY
 		max_parts=max_Y*max_X
+		numberOfParts=self._numberParts
 		col=[]
 		row=[]
-		j=0
 		Logger.loginfo("maxXnumer:"+str(max_X))
 		Logger.loginfo("maxYnumer:"+str(max_Y))
 		Logger.loginfo("Number of part :"+ str(self._numberParts))
 		if (self._numberParts == max_parts):
 			self._numberParts = 0
 			return 'bin_Full'
-		for i in range(max_Y):
-			for u in range(max_X):
-				new = j+1
-				j+=1
-				col.append(new)
-				Logger.logwarn('New j')
-			liststr = ' '.join([str(elem) for elem in col])
-			Logger.loginfo('col:'+liststr)
-			Logger.logwarn('New i')
-			row.append(col)	
-		Logger.loginfo('j:'+str(j))
-		Logger.loginfo('i:'+str(i))
-		liststr = ' '.join([str(elem) for elem in row])
+		matrix= [[0 for _ in range(max_Y)] for _ in range(max_X)]
+		for i in range(max_X):
+			for j in range(max_Y):
+				matrix[i][j] = i*max_Y+j
+		liststr = ' '.join([str(elem) for elem in matrix])
 		Logger.loginfo('row:'+liststr)
+		for i in range(max_X):
+			for j in range(max_Y):
+				if (numberOfParts == matrix[i][j]):
+					x=i
+					y=j
+					offset=self._offset[i][j]
+					liststr = ' '.join([str(elem) for elem in offset])
+					Logger.loginfo('offset:'+liststr)
+		try:
+			self._offset_x=offset[0]
+			Logger.loginfo('offsetX'+str(self._offset_x))
+			self._offset_y=offset[1]
+			Logger.loginfo('offsetY'+str(self._offset_y))
+		except:
+			Logger.loginfo('X&Y not correct out table')
 
-		try:
-			for p,row in enumerate(row):
-				value=self._numberParts
-				for value in row:
-					p+1
-					row.index(value)
-				x=p-1
-				y=row.index(value)-1
-				Logger.loginfo(str('col'+x))
-				Logger.loginfo(str('row'+y))
-		except:
-			Logger.logwarn('Looking true the matrix went wrong')
-		try:
-			if x==0 and y==0:
-				self._offset_y-=self._offsetSize_x
-				self._offset_x-=self._offsetSize_y
-				pass
-			if x<max_X:
-				self._offset_x+=self._offsetSize_x
-				pass
-			if x==max_X:
-				self._offset_y+=self._offsetSize_y
-		except:
-			Logger.logwarn('Error in setting new offset')
-		Logger.logwarn("end of state")
 		return 'continue'
 
 	def on_exit(self, userdata):
-		offset = [self._offset_x,self._offset_y,self._offset_z]
-		offsetSize = [self._offsetSize_x,self._offsetSize_y,self._offsetSize_z]
-		numberParts=self._numberParts
-		maxNumber=[self._maxNumberPartsX,self._maxNumberPartsY]
-		userdata.part_Content=[offset,offsetSize,numberParts,maxNumber]		
+		userdata.offset=[self._offset_x,self._offset_y,self._offset_z]
+		liststr = ' '.join([str(elem) for elem in userdata.offset])
+		Logger.loginfo('offset:'+liststr)
 		pass
 
 	def on_start(self):
