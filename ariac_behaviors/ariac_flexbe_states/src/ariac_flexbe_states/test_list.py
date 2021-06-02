@@ -47,39 +47,40 @@ class testList(EventState):
 		pass
 
 
-	def execute(self, userdata,):
+	def execute(self, userdata):
 		max_X=self._maxNumberPartsX
 		max_Y=self._maxNumberPartsY
-		i = 0
-		j = 0
+		max_parts=max_Y*max_X
 		col=[]
 		row=[]
+		j=0
 		Logger.loginfo("maxXnumer:"+str(max_X))
 		Logger.loginfo("maxYnumer:"+str(max_Y))
 		Logger.loginfo("Number of part :"+ str(self._numberParts))
-		try:
-			if self._numberParts == (max_X * max_Y):
-				self._numberParts = 0
-				return 'bin_Full'
-			while i < max_X:
-				row.append([])
-				while j < max_Y:
-					row[i].append(j+1)
-				j += 1
-				i += 1
-			Logger.loginfo('j:'+str(j))
-			Logger.loginfo('i:'+str(i))
+		if (self._numberParts == max_parts):
+			self._numberParts = 0
+			return 'bin_Full'
+		for i in range(max_Y):
+			while j < max_X:
+				new = j+1
+				col.append(new)
+				j+=1
+				Logger.logwarn('New j')
+			Logger.logwarn('New i')
+			row.append(col)
 			liststr = ' '.join([str(elem) for elem in row])
-			Logger.loginfo('row:'+liststr)
-		except:
-			Logger.logwarn('matrix not correct made')
+			Logger.loginfo('col:'+liststr)
+		Logger.loginfo('j:'+str(j))
+		Logger.loginfo('i:'+str(i))
+		liststr = ' '.join([str(elem) for elem in row])
+		Logger.loginfo('row:'+liststr)
 
 		try:
 			for p,row in enumerate(row):
 				value=self._numberParts
 				for value in row:
 					p+1
-					row.index(value)+1
+					row.index(value)
 				x=p-1
 				y=row.index(value)-1
 				Logger.loginfo(str('col'+x))
