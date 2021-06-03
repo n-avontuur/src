@@ -53,11 +53,11 @@ class a1_Move_RobotSM(Behavior):
 		# x:100 y:214, x:587 y:317
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config', 'pick_Offset', 'robot_Name'])
 		_state_machine.userdata.pick_Pose = []
-		_state_machine.userdata.pick_Offset = 0
-		_state_machine.userdata.pick_Rotation = 0
+		_state_machine.userdata.pick_Offset = [0,0,0]
+		_state_machine.userdata.pick_Rotation = [0,0,0]
 		_state_machine.userdata.drop_Pose = []
-		_state_machine.userdata.drop_Offset = []
-		_state_machine.userdata.drop_Rotation = 0
+		_state_machine.userdata.drop_Offset = [0,0,0]
+		_state_machine.userdata.drop_Rotation = [0,0,0]
 		_state_machine.userdata.prePick_Config = ''
 		_state_machine.userdata.preDrop_Config = ''
 		_state_machine.userdata.robot_Name = ''

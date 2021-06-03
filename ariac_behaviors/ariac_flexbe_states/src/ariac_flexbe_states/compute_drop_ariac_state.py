@@ -1,3 +1,4 @@
+ 
 #!/usr/bin/env python
 
 # Software License Agreement (BSD License)
@@ -58,27 +59,23 @@ import actionlib
 
 '''
 Created on Sep 5 2018
-
 @author: HRWROS mooc instructors
 Adapted to Ariac by: Gerard Harkema
-
 This state provides the joint configuration to grasp the box in the factory simulation of the MOOC "Hello (Real) World with ROS", given the pose of the box as provided by the DetectPartCameraState
 '''
 
 class ComputeDropState(EventState):
 	'''
 	Computes the joint configuration needed to grasp the part given its pose.
-
 	-- joint_names		string[]	Names of the joints
 	># offset		float		Some offset
 	># rotation		float		Rotation?
 	># move_group       	string		Name of the group for which to compute the joint values for grasping.
-        ># action_topic_namespace    string          Name of the namespace of the move group to be used for planning.
+        ># action_topic_namespace    string          Name of the prefix of the move group to be used for planning.
 	># tool_link		string		e.g. "ee_link"
 	># pose			PoseStamped	pose of the part to pick
 	#> joint_values		float[]		joint values for grasping
 	#> joint_names		string[]	names of the joints
-
 	<= continue 				if a grasp configuration has been computed for the pose
 	<= failed 				otherwise.
 	'''
@@ -86,8 +83,6 @@ class ComputeDropState(EventState):
 	def __init__(self, joint_names):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
 		super(ComputeDropState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'offset', 'rotation'], output_keys = ['joint_values','joint_names'])
-
-		self._joint_names = joint_names
 
 
 		# tf to transfor the object pose
@@ -100,7 +95,7 @@ class ComputeDropState(EventState):
 		# Main purpose is to check state conditions and trigger a corresponding outcome.
 		# If no outcome is returned, the state will stay active.
 
-		rospy.logwarn(userdata.pose)
+		rospy.logwarn('this is %s ',userdata.pose )
 
 		if self._failed == True:
 			return 'failed'
@@ -118,7 +113,7 @@ class ComputeDropState(EventState):
 			userdata.joint_names = copy.deepcopy(joint_names)
 			return 'continue'
 		else:
-			rospy.loginfo("ComputeGraspState::Execute state - failed.  Returned: %d", int(self._srv_result.error_code.val) )
+			rospy.loginfo("ComputeDropState::Execute state - failed.  Returned: %d", int(self._srv_result.error_code.val) )
 			return 'failed'
 
 	def on_enter(self, userdata):
@@ -129,11 +124,11 @@ class ComputeDropState(EventState):
 		self._action_topic_namespace = userdata.action_topic_namespace
 		self._tool_link = userdata.tool_link
 
-		self._offset = userdata.offset
-		self._offsetx = userdata.offset[0]
-		self._offsety = userdata.offset[1]
-		self._offsetz = userdata.offset[2]
+		self._offset = userdata.offset[0]
+		self._offsetX = userdata.offset[1]
+		self._offsetY = userdata.offset[2]
 		self._rotation = userdata.rotation
+		Logger.loginfo('offsetX: '+self._offsetX)
 
 		self._srv_name = userdata.action_topic_namespace + '/compute_ik'
 		self._ik_srv = ProxyServiceCaller({self._srv_name: GetPositionIK})
@@ -154,9 +149,11 @@ class ComputeDropState(EventState):
 				continue
 
 		# the grasp pose is defined as being located on top of the item
-		target_pose.pose.position.x += self._offsetx + 0.0
-		target_pose.pose.position.y += self._offsety + 0.0
-		target_pose.pose.position.z += self._offsetz + 0.0
+		target_pose.pose.position.z += self._offset + 0.0
+		target_pose.pose.position.x += self._offsetX + 0.0
+		target_pose.pose.position.y += self._offsetY + 0.0
+
+
 
 		# rotate the object pose 180 degrees around - now works with -90???
 
@@ -170,7 +167,7 @@ class ComputeDropState(EventState):
 
 		# use ik service to compute joint_values
 		self._srv_req = GetPositionIKRequest()
-		self._srv_req.ik_request.group_name = self._move_group 
+		self._srv_req.ik_request.group_name = self._move_group
 		self._srv_req.ik_request.robot_state.joint_state = rospy.wait_for_message(self._action_topic_namespace + '/joint_states', sensor_msgs.msg.JointState)
 		self._srv_req.ik_request.ik_link_name = self._tool_link  # TODO: this needs to be a parameter
 		self._srv_req.ik_request.pose_stamped = target_pose

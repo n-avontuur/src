@@ -11,7 +11,7 @@ class setNewPosePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Pose','pick_Offset'])
+		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset'])
 
 	def on_enter(self, userdata):
 		try:
@@ -73,18 +73,14 @@ class setNewPosePart(EventState):
 					Logger.loginfo('offset:'+liststr)
 		try:
 			self._offset_x=offset[0]
-			Logger.loginfo('offsetX'+str(self._offset_x))
+			Logger.loginfo('offsetX: '+str(self._offset_x))
 			self._offset_y=offset[1]
-			Logger.loginfo('offsetY'+str(self._offset_y))
+			Logger.loginfo('offsetY: '+str(self._offset_y))			
 		except:
 			Logger.loginfo('X&Y not correct out table')
-		try:
-			userdata.pose_offset=[self._offset_x,self._offset_y,self._offset_z]
-			userdata.pick_offset=[self._offset_x,self._offset_y,self._offset_z]
-			liststr = ' '.join([str(elem) for elem in self._offset_z])
-			Logger.loginfo('offset:'+liststr)
-		except:
-			Logger.loginfo('pose_offset not correct made')
+
+		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z]
+		userdata.pick_Offset=[0,0,self._offset_z]
 		return 'continue'
 
 	def on_exit(self, userdata):
