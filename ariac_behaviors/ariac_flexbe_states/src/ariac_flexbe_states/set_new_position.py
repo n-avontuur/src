@@ -22,7 +22,7 @@ class setNewPosePart(EventState):
 
 		try:
 			offset_z=userdata.part_Content[1]		
-			userdata.pick_offset=offset_z[0]
+			self._offset_z=offset_z[0]
 		except:
 			Logger.logwarn('offsetZ not correct')
 
@@ -80,7 +80,8 @@ class setNewPosePart(EventState):
 			Logger.loginfo('X&Y not correct out table')
 		try:
 			userdata.pose_offset=[self._offset_x,self._offset_y,self._offset_z]
-			liststr = ' '.join([str(elem) for elem in userdata.offset])
+			userdata.pick_offset=[self._offset_x,self._offset_y,self._offset_z]
+			liststr = ' '.join([str(elem) for elem in self._offset_z])
 			Logger.loginfo('offset:'+liststr)
 		except:
 			Logger.loginfo('pose_offset not correct made')

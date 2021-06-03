@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from ariac_flexbe_states.compute_drop_ariac_state import ComputeDropAriacState
+from ariac_flexbe_states.compute_drop_ariac_state import ComputeDropState
 from ariac_flexbe_states.get_vacuum_gripper_status_state import GetVacuumGripperStatusState
 from ariac_flexbe_states.moveit_to_joints_dyn_ariac_state import MoveitToJointsDynAriacState
 from ariac_flexbe_states.set_RobotParameters import set_Robot_Parameters
@@ -79,10 +79,10 @@ class a1_Move_RobotSM(Behavior):
 
 			# x:608 y:90
 			OperatableStateMachine.add('ComputePick',
-										ComputeDropAriacState(joint_names=joint_names),
+										ComputeDropState(joint_names=joint_names),
 										transitions={'continue': 'move_To_Pick', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pick_Pose', 'part': 'pick_Offset', 'rotation': 'pick_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pick_Pose', 'offset': 'pick_Offset', 'rotation': 'pick_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
 			# x:1020 y:189
 			OperatableStateMachine.add('check_Gripper',
@@ -191,10 +191,10 @@ class a1_Move_RobotSM(Behavior):
 
 			# x:1013 y:410
 			OperatableStateMachine.add('ComputeDrop',
-										ComputeDropAriacState(joint_names=joint_names),
+										ComputeDropState(joint_names=joint_names),
 										transitions={'continue': 'move_To_Pick_2', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'drop_Pose', 'part': 'drop_Offset', 'rotation': 'drop_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'drop_Pose', 'offset': 'drop_Offset', 'rotation': 'drop_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
 
 		return _state_machine

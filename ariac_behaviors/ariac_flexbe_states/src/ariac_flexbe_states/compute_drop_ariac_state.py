@@ -65,7 +65,7 @@ Adapted to Ariac by: Gerard Harkema
 This state provides the joint configuration to grasp the box in the factory simulation of the MOOC "Hello (Real) World with ROS", given the pose of the box as provided by the DetectPartCameraState
 '''
 
-class ComputeDropAriacState(EventState):
+class ComputeDropState(EventState):
 	'''
 	Computes the joint configuration needed to grasp the part given its pose.
 
@@ -85,7 +85,7 @@ class ComputeDropAriacState(EventState):
 
 	def __init__(self, joint_names):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
-		super(ComputeDropAriacState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'part', 'rotation'], output_keys = ['joint_values','joint_names'])
+		super(ComputeDropState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'offset', 'rotation'], output_keys = ['joint_values','joint_names'])
 
 		self._joint_names = joint_names
 
@@ -129,9 +129,10 @@ class ComputeDropAriacState(EventState):
 		self._action_topic_namespace = userdata.action_topic_namespace
 		self._tool_link = userdata.tool_link
 
-		self._offsetX = userdata.part.offset[0]
-		self._offsetY = userdata.part.offset[1]
-		self._offsetZ = userdata.part.offset[2]
+		self._offset = userdata.offset
+		self._offsetx = userdata.offset[0]
+		self._offsety = userdata.offset[1]
+		self._offsetz = userdata.offset[2]
 		self._rotation = userdata.rotation
 
 		self._srv_name = userdata.action_topic_namespace + '/compute_ik'
@@ -153,10 +154,9 @@ class ComputeDropAriacState(EventState):
 				continue
 
 		# the grasp pose is defined as being located on top of the item
-		target_pose.pose.position.x += self._offsetX + 0.0
-		target_pose.pose.position.Y += self._offsetY + 0.0
-		target_pose.pose.position.z += self._offsetZ + 0.0
-		
+		target_pose.pose.position.x += self._offsetx + 0.0
+		target_pose.pose.position.y += self._offsety + 0.0
+		target_pose.pose.position.z += self._offsetz + 0.0
 
 		# rotate the object pose 180 degrees around - now works with -90???
 
