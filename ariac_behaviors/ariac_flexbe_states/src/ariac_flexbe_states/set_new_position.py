@@ -11,7 +11,7 @@ class setNewPosePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['pose_offset'])
+		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Pose','pick_Offset'])
 
 	def on_enter(self, userdata):
 		try:
@@ -22,7 +22,7 @@ class setNewPosePart(EventState):
 
 		try:
 			offset_z=userdata.part_Content[1]		
-			self._offset_z=offset_z[0]
+			userdata.pick_offset=offset_z[0]
 		except:
 			Logger.logwarn('offsetZ not correct')
 

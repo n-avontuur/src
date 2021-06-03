@@ -14,7 +14,7 @@ class getEmptyBin(EventState):
 	'''
 
 	def __init__(self):
-		super(getEmptyBin,self).__init__(input_keys = ['binPartType'],outcomes = ['continue', 'failed'], output_keys = ['bin','bin_frame','robot_name'])
+		super(getEmptyBin,self).__init__(input_keys = ['binPartType'],outcomes = ['continue', 'failed'], output_keys = ['bin','bin_frame'])
 
 
 	def execute(self, userdata):

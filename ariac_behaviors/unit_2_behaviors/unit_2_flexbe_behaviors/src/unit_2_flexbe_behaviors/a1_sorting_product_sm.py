@@ -53,16 +53,6 @@ class a1_Sorting_ProductSM(Behavior):
 		# x:1325 y:289, x:130 y:463
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 		_state_machine.userdata.bin_Content = ['empty','empty', 'empty', 'empty', 'empty', 'empty']
-		_state_machine.userdata.gasket = []
-		_state_machine.userdata.piston = []
-		_state_machine.userdata.gear = []
-		_state_machine.userdata.part_Content = []
-		_state_machine.userdata.part_Type = ' '
-		_state_machine.userdata.bin = ' '
-		_state_machine.userdata.pick_rotation = []
-		_state_machine.userdata.preDrop_Config = ''
-		_state_machine.userdata.pick_offset = []
-		_state_machine.userdata.pick_Pose = []
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -82,14 +72,14 @@ class a1_Sorting_ProductSM(Behavior):
 										self.use_behavior(a1_setting_ParametersSM, 'a1_setting_Parameters'),
 										transitions={'finished': 'a1_Move_Robot', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
-										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'drop_pose': 'drop_Pose', 'pose_offset': 'drop_Offset', 'PreDrop_config': 'preDrop_config', 'robot_Name': 'robot_Name'})
+										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'robot_Name': 'robot_Name', 'pick_Pose': 'pick_Pose', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'drop_Pose': 'drop_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'preDrop_Config': 'preDrop_Config', 'prePick_Config': 'prePick_Config'})
 
 			# x:78 y:113
 			OperatableStateMachine.add('setFirstTimePart',
 										setFirstTimePart(),
 										transitions={'continue': 'transport_ conveyor_to_pick_location', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'gasket_offset': 'gasket_offset', 'piston_offset': 'piston_offset', 'gear_offset': 'gear_offset'})
 
 			# x:241 y:112
 			OperatableStateMachine.add('transport_ conveyor_to_pick_location',
@@ -103,7 +93,7 @@ class a1_Sorting_ProductSM(Behavior):
 										self.use_behavior(a1_Move_RobotSM, 'a1_Move_Robot'),
 										transitions={'finished': 'finished', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
-										remapping={'pick_Pose': 'pick_Pose', 'pick_offset': 'pick_offset', 'pick_rotation': 'pick_rotation', 'drop_Pose': 'drop_Pose', 'drop_Offset': 'drop_Offset', 'drop_Offset': 'drop_Offset', 'robot_Name': 'robot_Name', 'preDrop_Config': 'preDrop_Config'})
+										remapping={'pick_Pose': 'pick_Pose', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'drop_Pose': 'drop_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'prePick_Config': 'prePick_Config', 'preDrop_Config': 'preDrop_Config', 'pick_Offset': 'pick_Offset', 'robot_Name': 'robot_Name'})
 
 
 		return _state_machine
