@@ -50,8 +50,8 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
-		# x:27 y:280, x:243 y:253, x:580 y:384
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'not_found'], input_keys=['bin', 'part_Type'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type'])
+		# x:27 y:280, x:243 y:253, x:580 y:384, x:330 y:365
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'not_found', 'bin_Full'], input_keys=['bin', 'part_Type'], output_keys=['drop_pose', 'pose_offset', 'PreDrop_config', 'robot_Name', 'part_Type'])
 		_state_machine.userdata.bin = 'bin4'
 		_state_machine.userdata.ref_frame = 'world'
 		_state_machine.userdata.PreDrop_config = ''
@@ -127,16 +127,16 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 			# x:14 y:457
 			OperatableStateMachine.add('setNewPose',
 										setNewPosePart(),
-										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'not_found'},
+										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'bin_Full'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
-										remapping={'part_Content': 'part_Content', 'pose_offset': 'pose_offset'})
+										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'pose_offset': 'pose_offset'})
 
 			# x:202 y:48
 			OperatableStateMachine.add('setPartFirstTime',
 										setFirstTimePart(),
 										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'gasket_offset': 'gasket_offset', 'piston_offset': 'piston_offset', 'gear_offset': 'gear_offset'})
 
 			# x:368 y:73
 			OperatableStateMachine.add('setPartWithPartType',

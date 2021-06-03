@@ -67,6 +67,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 		_state_machine.userdata.drop_pose = []
 		_state_machine.userdata.part_Content = []
 		_state_machine.userdata.PreDrop_config = ''
+		_state_machine.userdata.numberOfModels = 0
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -84,14 +85,14 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 
 			# x:439 y:345
 			OperatableStateMachine.add('getPreGraspR1',
-										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R2', index_title='bin', column_title='robot_config'),
+										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='robot_config'),
 										transitions={'found': 'setNewOffsetPosition', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'PreDrop_config'})
 
 			# x:429 y:429
 			OperatableStateMachine.add('getPreGraspR2',
-										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='robot_config'),
+										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R2', index_title='bin', column_title='robot_config'),
 										transitions={'found': 'setNewOffsetPosition', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'PreDrop_config'})
@@ -108,14 +109,14 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										setFirstTimePart(),
 										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'gasket_offset': 'gasket_offset', 'piston_offset': 'piston_offset', 'gear_offset': 'gear_offset'})
 
 			# x:152 y:390
 			OperatableStateMachine.add('setNewOffsetPosition',
 										setNewPosePart(),
 										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'bin_Full'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
-										remapping={'part_Content': 'part_Content', 'pose_offset': 'pose_offset'})
+										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'pose_offset': 'pose_offset'})
 
 			# x:635 y:43
 			OperatableStateMachine.add('setPartWithPartType',

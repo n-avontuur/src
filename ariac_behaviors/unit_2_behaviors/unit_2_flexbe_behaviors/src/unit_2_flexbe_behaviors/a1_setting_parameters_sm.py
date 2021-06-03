@@ -87,14 +87,14 @@ class a1_setting_ParametersSM(Behavior):
 			# x:436 y:136
 			OperatableStateMachine.add('locate_Place_In_Bin_With_Content',
 										self.use_behavior(locate_Place_In_Bin_With_ContentSM, 'locate_Place_In_Bin_With_Content'),
-										transitions={'finished': 'finished', 'failed': 'failed', 'not_found': 'Locate_Place_In_Empty_Bin'},
-										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'not_found': Autonomy.Inherit},
-										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'gear': 'gear', 'gasket': 'gasket', 'piston': 'piston', 'drop_pose': 'drop_pose', 'pose_offset': 'pose_offset', 'PreDrop_config': 'PreDrop_config', 'robot_Name': 'robot_Name'})
+										transitions={'finished': 'finished', 'failed': 'failed', 'not_found': 'failed', 'bin_Full': 'Locate_Place_In_Empty_Bin'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'not_found': Autonomy.Inherit, 'bin_Full': Autonomy.Inherit},
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'drop_pose': 'drop_pose', 'pose_offset': 'pose_offset', 'PreDrop_config': 'PreDrop_config', 'robot_Name': 'robot_Name'})
 
 			# x:441 y:369
 			OperatableStateMachine.add('Locate_Place_In_Empty_Bin',
 										self.use_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin'),
-										transitions={'finished': 'finished', 'failed': 'failed', 'bin_Full': 'failed'},
+										transitions={'finished': 'finished', 'failed': 'failed', 'bin_Full': 'getLocationOfAllParts'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'bin_Full': Autonomy.Inherit},
 										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'drop_pose': 'drop_pose', 'pose_offset': 'pose_offset', 'PreDrop_config': 'PreDrop_config', 'robot_Name': 'robot_Name'})
 
