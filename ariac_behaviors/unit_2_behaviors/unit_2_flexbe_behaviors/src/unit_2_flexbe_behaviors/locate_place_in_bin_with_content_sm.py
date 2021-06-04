@@ -14,7 +14,6 @@ from ariac_flexbe_states.select_Robot import selectRobot
 from ariac_flexbe_states.set_Part import setPart
 from ariac_flexbe_states.set_new_position import setNewPosePart
 from ariac_support_flexbe_states.equal_state import EqualState
-from flexbe_states.log_key_state import LogKeyState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -51,18 +50,18 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
 		# x:38 y:200, x:330 y:365, x:278 y:259
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'bin_Full', 'failed'], input_keys=['bin', 'part_Type', 'gasket', 'piston', 'gear'], output_keys=['part_Type', 'robot_Name', 'pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config'])
-		_state_machine.userdata.bin = 'bin4'
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'bin_Full', 'failed'], input_keys=['bin', 'part_Type', 'gasket', 'piston', 'gear', 'pick_Pose'], output_keys=['part_Type', 'robot_Name', 'pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config'])
+		_state_machine.userdata.bin = ''
 		_state_machine.userdata.ref_frame = 'world'
 		_state_machine.userdata.part_Type = 'gear_part'
 		_state_machine.userdata.robot_Name = ' '
 		_state_machine.userdata.robot1_Name = 'arm1'
 		_state_machine.userdata.pick_Pose = []
-		_state_machine.userdata.pick_Offset = 0
-		_state_machine.userdata.pick_Rotation = 0
+		_state_machine.userdata.pick_Offset = []
+		_state_machine.userdata.pick_Rotation = 0.0
 		_state_machine.userdata.drop_Pose = []
 		_state_machine.userdata.drop_Offset = []
-		_state_machine.userdata.drop_Rotation = 0
+		_state_machine.userdata.drop_Rotation = 0.0
 		_state_machine.userdata.preDrop_Config = ''
 		_state_machine.userdata.prePick_Config = ''
 		_state_machine.userdata.gasket = []
@@ -82,13 +81,6 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'bin': 'bin', 'robot_Name': 'robot_Name'})
-
-			# x:721 y:255
-			OperatableStateMachine.add('detectNumberOfParts',
-										DetectTotalPartCameraAriacState(time_out=0.5),
-										transitions={'continue': 'getPreGraspR1', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'ref_frame': 'ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part_Type', 'pose': 'pose', 'numberOfModels': 'numberOfModels'})
 
 			# x:861 y:496
 			OperatableStateMachine.add('detectNumberOfParts_2',
@@ -142,9 +134,9 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 			# x:14 y:457
 			OperatableStateMachine.add('setNewPose',
 										setNewPosePart(),
-										transitions={'continue': 'PrintRobotName', 'failed': 'failed', 'bin_Full': 'bin_Full'},
+										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'bin_Full'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
-										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'drop_Pose': 'drop_Pose', 'pick_Offset': 'pick_Offset'})
+										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'drop_Offset': 'drop_Offset', 'pick_Offset': 'pick_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Rotation': 'pick_Rotation'})
 
 			# x:368 y:73
 			OperatableStateMachine.add('setPartWithPartType',
@@ -160,12 +152,12 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 										autonomy={'true': Autonomy.Off, 'false': Autonomy.Off},
 										remapping={'value_a': 'robot_Name', 'value_b': 'robot1_Name'})
 
-			# x:20 y:316
-			OperatableStateMachine.add('PrintRobotName',
-										LogKeyState(text='pickOffset :', severity=Logger.REPORT_HINT),
-										transitions={'done': 'finished'},
-										autonomy={'done': Autonomy.Off},
-										remapping={'data': 'pick_Offset'})
+			# x:721 y:255
+			OperatableStateMachine.add('detectNumberOfParts',
+										DetectTotalPartCameraAriacState(time_out=0.5),
+										transitions={'continue': 'getPreGraspR1', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'ref_frame': 'ref_frame', 'camera_topic': 'camera_topic', 'camera_frame': 'camera_frame', 'part': 'part_Type', 'pose': 'pose', 'numberOfModels': 'numberOfModels'})
 
 
 		return _state_machine

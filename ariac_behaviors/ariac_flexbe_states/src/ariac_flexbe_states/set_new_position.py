@@ -11,7 +11,7 @@ class setNewPosePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset'])
+		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset','drop_Rotation','pick_Rotation'])
 
 	def on_enter(self, userdata):
 		try:
@@ -51,9 +51,9 @@ class setNewPosePart(EventState):
 		numberOfParts=self._numberParts
 		col=[]
 		row=[]
-		Logger.loginfo("maxXnumer:"+str(max_X))
-		Logger.loginfo("maxYnumer:"+str(max_Y))
-		Logger.loginfo("Number of part :"+ str(self._numberParts))
+		# Logger.loginfo("maxXnumer:"+str(max_X))
+		# Logger.loginfo("maxYnumer:"+str(max_Y))
+		# Logger.loginfo("Number of part :"+ str(self._numberParts))
 		if (self._numberParts == max_parts):
 			self._numberParts = 0
 			return 'bin_Full'
@@ -62,25 +62,28 @@ class setNewPosePart(EventState):
 			for j in range(max_Y):
 				matrix[i][j] = i*max_Y+j
 		liststr = ' '.join([str(elem) for elem in matrix])
-		Logger.loginfo('row:'+liststr)
+		#Logger.loginfo('row:'+liststr)
 		for i in range(max_X):
 			for j in range(max_Y):
-				if (numberOfParts == matrix[i][j]):
+				if ((numberOfParts+1) == matrix[i][j]):
 					x=i
 					y=j
 					offset=self._offset[i][j]
-					liststr = ' '.join([str(elem) for elem in offset])
-					Logger.loginfo('offset:'+liststr)
+				
 		try:
 			self._offset_x=offset[0]
-			Logger.loginfo('offsetX: '+str(self._offset_x))
-			self._offset_y=offset[1]
-			Logger.loginfo('offsetY: '+str(self._offset_y))			
+			self._offset_y=offset[1]	
 		except:
 			Logger.loginfo('X&Y not correct out table')
 
 		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z]
-		userdata.pick_Offset=[0,0,self._offset_z]
+		userdata.pick_Offset=[0.0,0.0,self._offset_z]
+		userdata.drop_Rotation=0.0
+		userdata.pick_Rotation=0.0
+		liststr = ' '.join([str(elem) for elem in userdata.pick_Offset])
+		Logger.loginfo('pick offset: '+liststr)
+		liststr = ' '.join([str(elem) for elem in userdata.drop_Offset])
+		Logger.loginfo('drop offset: '+liststr)
 		return 'continue'
 
 	def on_exit(self, userdata):

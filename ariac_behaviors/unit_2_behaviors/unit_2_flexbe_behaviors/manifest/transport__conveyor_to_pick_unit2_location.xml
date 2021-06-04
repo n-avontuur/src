@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="transport_ conveyor_to_pick_location">
+<behavior name="transport_ conveyor_to_pick_unit2_location">
 
-	<executable package_path="unit_2_flexbe_behaviors.transport__conveyor_to_pick_location_sm" class="transport_conveyor_to_pick_locationSM" />
+	<executable package_path="unit_2_flexbe_behaviors.transport__conveyor_to_pick_unit2_location_sm" class="transport_conveyor_to_pick_unit2_locationSM" />
 	<tagstring>Conveyor, part</tagstring>
 	<author>niels avontuur</author>
 	<date>Thu May 27 2021</date>

@@ -26,7 +26,7 @@ class set_Robot_Parameters(EventState):
 			userdata.tool_link = 'ee_link'
 			userdata.gripper_service = '/ariac/arm1/gripper/control'
 			userdata.gripper_status_topic = '/ariac/arm1/gripper/state'
-			userdata.prePick_Config = 'homeR1'
+			userdata.prePick_Config = 'conveyorR1'
 		elif userdata.robot_Name == 'arm2':
 			userdata.move_group = 'manipulator'
 			userdata.action_topic_namespace = '/ariac/arm2'
@@ -35,7 +35,7 @@ class set_Robot_Parameters(EventState):
 			userdata.tool_link = 'ee_link'
 			userdata.gripper_service = '/ariac/arm2/gripper/control'
 			userdata.gripper_status_topic = '/ariac/arm2/gripper/state'
-			userdata.prePick_Config = 'homeR2'
+			userdata.prePick_Config = 'conveyorR2'
 		return 'continue'
 
 

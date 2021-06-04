@@ -66,11 +66,11 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 		_state_machine.userdata.robot1_Name = 'arm1'
 		_state_machine.userdata.numberOfModels = 0
 		_state_machine.userdata.pick_Pose = []
-		_state_machine.userdata.pick_Offset = [0]
-		_state_machine.userdata.pick_Rotation = 0
+		_state_machine.userdata.pick_Offset = []
+		_state_machine.userdata.pick_Rotation = 1
 		_state_machine.userdata.drop_Pose = []
 		_state_machine.userdata.drop_Offset = []
-		_state_machine.userdata.drop_Rotation = 0
+		_state_machine.userdata.drop_Rotation = 1
 		_state_machine.userdata.preDrop_Config = ''
 		_state_machine.userdata.prePick_Config = ''
 
@@ -128,7 +128,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										setNewPosePart(),
 										transitions={'continue': 'printRobotName', 'failed': 'failed', 'bin_Full': 'bin_Full'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
-										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'drop_Pose': 'drop_Pose', 'pick_Offset': 'pick_Offset'})
+										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'drop_Offset': 'drop_Offset', 'pick_Offset': 'pick_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Rotation': 'pick_Rotation'})
 
 			# x:635 y:43
 			OperatableStateMachine.add('setPartWithPartType',

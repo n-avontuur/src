@@ -10,7 +10,6 @@
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_logistics_flexbe_states.get_material_locations import GetMaterialLocationsState
 from ariac_support_flexbe_states.get_item_from_list_state import GetItemFromListState
-from flexbe_states.log_key_state import LogKeyState
 from unit_2_flexbe_behaviors.locate_place_in_bin_with_content_sm import locate_Place_In_Bin_With_ContentSM
 from unit_2_flexbe_behaviors.locate_place_in_empty_bin_sm import Locate_Place_In_Empty_BinSM
 # Additional imports can be added inside the following tags
@@ -50,7 +49,7 @@ class a1_setting_ParametersSM(Behavior):
 
 	def create(self):
 		# x:1154 y:207, x:780 y:242
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['robot_Name', 'gear', 'gasket', 'piston', 'pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content', 'pick_Pose'], output_keys=['robot_Name', 'gear', 'gasket', 'piston', 'pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config'])
 		_state_machine.userdata.part_Type = ''
 		_state_machine.userdata.zero = 0
 		_state_machine.userdata.robot_Name = ''
@@ -62,10 +61,10 @@ class a1_setting_ParametersSM(Behavior):
 		_state_machine.userdata.part_Content = []
 		_state_machine.userdata.pick_Pose = []
 		_state_machine.userdata.pick_Offset = []
-		_state_machine.userdata.pick_Rotation = 0
+		_state_machine.userdata.pick_Rotation = 0.0
 		_state_machine.userdata.drop_Pose = []
 		_state_machine.userdata.drop_Offset = []
-		_state_machine.userdata.drop_Rotation = []
+		_state_machine.userdata.drop_Rotation = 0.0
 		_state_machine.userdata.preDrop_Config = ''
 		_state_machine.userdata.prePick_Config = ''
 
@@ -93,21 +92,14 @@ class a1_setting_ParametersSM(Behavior):
 			# x:436 y:136
 			OperatableStateMachine.add('locate_Place_In_Bin_With_Content',
 										self.use_behavior(locate_Place_In_Bin_With_ContentSM, 'locate_Place_In_Bin_With_Content'),
-										transitions={'finished': 'printRobotName', 'bin_Full': 'Locate_Place_In_Empty_Bin', 'failed': 'failed'},
+										transitions={'finished': 'finished', 'bin_Full': 'Locate_Place_In_Empty_Bin', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'bin_Full': Autonomy.Inherit, 'failed': Autonomy.Inherit},
-										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'robot_Name': 'robot_Name', 'pick_Pose': 'pick_Pose', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'drop_Pose': 'drop_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'prePick_Config': 'prePick_Config', 'preDrop_Config': 'preDrop_Config'})
-
-			# x:966 y:213
-			OperatableStateMachine.add('printRobotName',
-										LogKeyState(text="Pick offset : ", severity=Logger.REPORT_HINT),
-										transitions={'done': 'finished'},
-										autonomy={'done': Autonomy.Off},
-										remapping={'data': 'pick_Offset'})
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'pick_Pose': 'pick_Pose', 'robot_Name': 'robot_Name', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'drop_Pose': 'drop_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'prePick_Config': 'prePick_Config', 'preDrop_Config': 'preDrop_Config'})
 
 			# x:441 y:369
 			OperatableStateMachine.add('Locate_Place_In_Empty_Bin',
 										self.use_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin'),
-										transitions={'finished': 'printRobotName', 'failed': 'failed', 'bin_Full': 'getLocationOfAllParts'},
+										transitions={'finished': 'finished', 'failed': 'failed', 'bin_Full': 'getLocationOfAllParts'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'bin_Full': Autonomy.Inherit},
 										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'pick_Pose': 'pick_Pose', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'drop_Pose': 'drop_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'preDrop_Config': 'preDrop_Config', 'prePick_Config': 'prePick_Config', 'robot_Name': 'robot_Name'})
 

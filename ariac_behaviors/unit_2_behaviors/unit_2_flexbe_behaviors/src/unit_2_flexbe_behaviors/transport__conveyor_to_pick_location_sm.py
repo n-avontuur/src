@@ -22,15 +22,15 @@ from flexbe_states.wait_state import WaitState
 Created on Thu May 27 2021
 @author: niels avontuur
 '''
-class transport_conveyor_to_pick_locationSM(Behavior):
+class transport_conveyor_to_pick_unit2_locationSM(Behavior):
 	'''
 	For starting conveyor and stopping if part is in the right place
 	'''
 
 
 	def __init__(self):
-		super(transport_conveyor_to_pick_locationSM, self).__init__()
-		self.name = 'transport_ conveyor_to_pick_location'
+		super(transport_conveyor_to_pick_unit2_locationSM, self).__init__()
+		self.name = 'transport_ conveyor_to_pick_unit2_location'
 
 		# parameters of this behavior
 

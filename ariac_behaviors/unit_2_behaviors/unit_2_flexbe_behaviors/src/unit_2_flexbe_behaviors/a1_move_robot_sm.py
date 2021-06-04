@@ -15,6 +15,7 @@ from ariac_flexbe_states.set_RobotParameters import set_Robot_Parameters
 from ariac_flexbe_states.srdf_state_to_moveit_ariac_state import SrdfStateToMoveitAriac
 from ariac_flexbe_states.vacuum_gripper_control_state import VacuumGripperControlState
 from flexbe_states.wait_state import WaitState
+from unit_2_flexbe_behaviors.a1_robots_home_sm import a1_Robots_HomeSM
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -38,6 +39,7 @@ class a1_Move_RobotSM(Behavior):
 		# parameters of this behavior
 
 		# references to used behaviors
+		self.add_behavior(a1_Robots_HomeSM, 'a1_Robots_Home')
 
 		# Additional initialization code can be added inside the following tags
 		# [MANUAL_INIT]
@@ -49,19 +51,20 @@ class a1_Move_RobotSM(Behavior):
 
 
 	def create(self):
-		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
 		# x:100 y:214, x:587 y:317
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config', 'pick_Offset', 'robot_Name'])
 		_state_machine.userdata.pick_Pose = []
 		_state_machine.userdata.pick_Offset = [0,0,0]
-		_state_machine.userdata.pick_Rotation = [0,0,0]
+		_state_machine.userdata.pick_Rotation = 0.0
 		_state_machine.userdata.drop_Pose = []
 		_state_machine.userdata.drop_Offset = [0,0,0]
-		_state_machine.userdata.drop_Rotation = [0,0,0]
+		_state_machine.userdata.drop_Rotation = 0.0
 		_state_machine.userdata.prePick_Config = ''
 		_state_machine.userdata.preDrop_Config = ''
 		_state_machine.userdata.robot_Name = ''
 		_state_machine.userdata.robot_name = ''
+		_state_machine.userdata.gripper_status_enabled = False
+		_state_machine.userdata.gripper_status_attached = False
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -70,16 +73,15 @@ class a1_Move_RobotSM(Behavior):
 
 
 		with _state_machine:
-			# x:31 y:129
-			OperatableStateMachine.add('set_Robot_Parameters',
-										set_Robot_Parameters(),
-										transitions={'continue': 'move_To_PrePick', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'robot_Name': 'robot_Name', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'tool_link': 'tool_link', 'gripper_service': 'gripper_service', 'gripper_status_topic': 'gripper_status_topic', 'gripper_status_attached': 'gripper_status_attached', 'gripper_status_enabled': 'gripper_status_enabled', 'prePick_Config': 'prePick_Config', 'robot_name': 'robot_name'})
+			# x:30 y:40
+			OperatableStateMachine.add('a1_Robots_Home',
+										self.use_behavior(a1_Robots_HomeSM, 'a1_Robots_Home'),
+										transitions={'finished': 'set_Robot_Parameters', 'failed': 'failed'},
+										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
 			# x:608 y:90
 			OperatableStateMachine.add('ComputePick',
-										ComputeDropState(joint_names=joint_names),
+										ComputeDropState(joint_names=['linear_arm_actuator_joint','shoulder_pan_joint','shoulder_lift_joint','wrist_1_joint','wrist_2_joint','wrist_3_joint']),
 										transitions={'continue': 'move_To_Pick', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pick_Pose', 'offset': 'pick_Offset', 'rotation': 'pick_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
@@ -89,14 +91,14 @@ class a1_Move_RobotSM(Behavior):
 										GetVacuumGripperStatusState(),
 										transitions={'continue': 'move_To_PreDrop', 'fail': 'move_To_PrePick'},
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
-										remapping={'topic_name': 'gripper_status_topic', 'enabled': 'enabled', 'attached': 'attached'})
+										remapping={'topic_name': 'gripper_status_topic', 'enabled': 'gripper_status_enabled', 'attached': 'gripper_status_attached'})
 
 			# x:51 y:438
 			OperatableStateMachine.add('check_Gripper_2',
 										GetVacuumGripperStatusState(),
 										transitions={'continue': 'move_To_PrePick_2', 'fail': 'wait_4'},
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
-										remapping={'topic_name': 'gripper_status_topic', 'enabled': 'enabled', 'attached': 'attached'})
+										remapping={'topic_name': 'gripper_status_topic', 'enabled': 'gripper_status_enabled', 'attached': 'gripper_status_attached'})
 
 			# x:300 y:438
 			OperatableStateMachine.add('disable_Gripper',
@@ -133,7 +135,7 @@ class a1_Move_RobotSM(Behavior):
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'preDrop_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
-			# x:227 y:142
+			# x:382 y:99
 			OperatableStateMachine.add('move_To_PrePick',
 										SrdfStateToMoveitAriac(),
 										transitions={'reached': 'ComputePick', 'planning_failed': 'wait', 'control_failed': 'wait', 'param_error': 'failed'},
@@ -146,6 +148,13 @@ class a1_Move_RobotSM(Behavior):
 										transitions={'reached': 'finished', 'planning_failed': 'wait_7', 'control_failed': 'wait_7', 'param_error': 'failed'},
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'prePick_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+
+			# x:31 y:129
+			OperatableStateMachine.add('set_Robot_Parameters',
+										set_Robot_Parameters(),
+										transitions={'continue': 'move_To_PrePick', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'robot_Name': 'robot_Name', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'tool_link': 'tool_link', 'gripper_service': 'gripper_service', 'gripper_status_topic': 'gripper_status_topic', 'gripper_status_attached': 'gripper_status_attached', 'gripper_status_enabled': 'gripper_status_enabled', 'prePick_Config': 'prePick_Config', 'robot_name': 'robot_name'})
 
 			# x:401 y:24
 			OperatableStateMachine.add('wait',
@@ -177,7 +186,7 @@ class a1_Move_RobotSM(Behavior):
 										transitions={'done': 'move_To_Pick_2'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:629 y:35
+			# x:731 y:35
 			OperatableStateMachine.add('wait_6',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'move_To_PrePick'},
@@ -191,7 +200,7 @@ class a1_Move_RobotSM(Behavior):
 
 			# x:1013 y:410
 			OperatableStateMachine.add('ComputeDrop',
-										ComputeDropState(joint_names=joint_names),
+										ComputeDropState(joint_names=['linear_arm_actuator_joint','shoulder_pan_joint','shoulder_lift_joint','wrist_1_joint','wrist_2_joint','wrist_3_joint']),
 										transitions={'continue': 'move_To_Pick_2', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'drop_Pose', 'offset': 'drop_Offset', 'rotation': 'drop_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})

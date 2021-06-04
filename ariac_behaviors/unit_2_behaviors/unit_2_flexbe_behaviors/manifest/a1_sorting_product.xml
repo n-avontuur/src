@@ -13,7 +13,7 @@
 
 	<!-- Contained Behaviors -->
 	<contains name="a1_setting_Parameters" />
-	<contains name="transport_ conveyor_to_pick_location" />
+	<contains name="transport_ conveyor_to_pick_unit2_location" />
 	<contains name="a1_Move_Robot" />
 
 	<!-- Available Parameters -->

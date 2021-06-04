@@ -73,7 +73,7 @@ class GetVacuumGripperStatusState(EventState):
 
 		#rospy.logwarn('before wait message')
 		self._status = rospy.wait_for_message(self._topic_name, VacuumGripperState)
-		#rospy.logwarn(status)
+		rospy.logwarn(self._status)
 
 	def on_exit(self, userdata):
 		# This method is called when an outcome is returned and another state gets active.
