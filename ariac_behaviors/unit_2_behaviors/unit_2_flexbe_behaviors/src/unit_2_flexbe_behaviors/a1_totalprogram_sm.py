@@ -239,7 +239,7 @@ class a1_TotalProgramSM(Behavior):
 
 			# x:645 y:615
 			OperatableStateMachine.add('newPickPose',
-										CreatePoseState(xyz=[0.0,0.0,-0.01], rpy=[0.0,0.0,0.0]),
+										CreatePoseState(xyz=[0.0,0.0,-0.002], rpy=[0.0,0.0,0.0]),
 										transitions={'continue': 'decreaseOffsetPose', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'pose': 'poseDecrease'})
@@ -260,7 +260,7 @@ class a1_TotalProgramSM(Behavior):
 
 			# x:37 y:483
 			OperatableStateMachine.add('setGripperOn_2',
-										VacuumGripperControlState(enable=True),
+										VacuumGripperControlState(enable=False),
 										transitions={'continue': 'wait_6', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'service_name': 'gripper_service'})
@@ -311,7 +311,7 @@ class a1_TotalProgramSM(Behavior):
 
 			# x:1020 y:803
 			OperatableStateMachine.add('wait_5',
-										WaitState(wait_time=0.5),
+										WaitState(wait_time=1),
 										transitions={'done': 'GetGripperStatus'},
 										autonomy={'done': Autonomy.Off})
 
