@@ -51,25 +51,25 @@ class setNewPosePart(EventState):
 		numberOfParts=self._numberParts
 		col=[]
 		row=[]
-		# Logger.loginfo("maxXnumer:"+str(max_X))
-		# Logger.loginfo("maxYnumer:"+str(max_Y))
-		# Logger.loginfo("Number of part :"+ str(self._numberParts))
-		if (self._numberParts == max_parts):
-			self._numberParts = 0
-			return 'bin_Full'
-		matrix= [[0 for _ in range(max_Y)] for _ in range(max_X)]
-		for i in range(max_X):
-			for j in range(max_Y):
-				matrix[i][j] = i*max_Y+j
-		liststr = ' '.join([str(elem) for elem in matrix])
-		#Logger.loginfo('row:'+liststr)
-		for i in range(max_X):
-			for j in range(max_Y):
-				if ((numberOfParts+1) == matrix[i][j]):
-					x=i
-					y=j
-					offset=self._offset[i][j]
-				
+		try:
+			if (self._numberParts == max_parts):
+				self._numberParts = 0
+				return 'bin_Full'
+			matrix= [[0 for _ in range(max_Y)] for _ in range(max_X)]
+			for i in range(max_X):
+				for j in range(max_Y):
+					matrix[i][j] = i*max_Y+j
+			liststr = ' '.join([str(elem) for elem in matrix])
+			#Logger.loginfo('row:'+liststr)
+			for i in range(max_X):
+				for j in range(max_Y):
+					if ((numberOfParts+1) == matrix[i][j]):
+						x=i
+						y=j
+						offset=self._offset[i][j]
+		except:
+			Logger.loginfo('table wasnt made')
+
 		try:
 			self._offset_x=offset[0]
 			self._offset_y=offset[1]	
@@ -77,13 +77,16 @@ class setNewPosePart(EventState):
 			Logger.loginfo('X&Y not correct out table')
 
 		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z]
-		userdata.pick_Offset=[0.0,0.0,self._offset_z]
+		userdata.pick_Offset=self._offset_z
 		userdata.drop_Rotation=0.0
 		userdata.pick_Rotation=0.0
-		liststr = ' '.join([str(elem) for elem in userdata.pick_Offset])
-		Logger.loginfo('pick offset: '+liststr)
-		liststr = ' '.join([str(elem) for elem in userdata.drop_Offset])
-		Logger.loginfo('drop offset: '+liststr)
+		try:
+			liststr = ' '.join([str(elem) for elem in userdata.pick_Offset])
+			Logger.loginfo('pick offset: '+liststr)
+			liststr = ' '.join([str(elem) for elem in userdata.drop_Offset])
+			Logger.loginfo('drop offset: '+liststr)
+		except:
+			Logger.loginfo('reading pick and drop offset went wrong')
 		return 'continue'
 
 	def on_exit(self, userdata):

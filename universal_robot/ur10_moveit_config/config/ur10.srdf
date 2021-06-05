@@ -16,6 +16,15 @@
         <link name="ee_link"/>
     </group>
 <!--Robot1-->
+    <group_state name="home" group="manipulator">
+        <joint name="elbow_joint" value="2.14" />
+        <joint name="linear_arm_actuator_joint" value="0.00" />
+        <joint name="shoulder_lift_joint" value="-1.00" />
+        <joint name="shoulder_pan_joint" value="1.57" />
+        <joint name="wrist_1_joint" value="3.14" />
+        <joint name="wrist_2_joint" value="-1.57" />
+        <joint name="wrist_3_joint" value="0" />
+    </group_state>
     <group_state name="tray1PreDropR1" group="manipulator">
         <joint name="elbow_joint" value="2.14" />
         <joint name="linear_arm_actuator_joint" value="1.18" />

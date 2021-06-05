@@ -114,6 +114,7 @@ class DetectFirstPartCameraAriacState(EventState):
 						pose = tf2_geometry_msgs.do_transform_pose(pose, self._transform)
 						userdata.pose = pose
 						userdata.part = part
+						rospy.logwarn(userdata.pose )
 						return 'continue'
 			userdata.pose = None
 			userdata.part = None

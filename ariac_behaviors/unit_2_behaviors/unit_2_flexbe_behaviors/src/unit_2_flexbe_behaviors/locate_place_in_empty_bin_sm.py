@@ -53,7 +53,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
 		# x:28 y:217, x:213 y:236, x:230 y:350
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'bin_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'bin_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Offset', 'pick_Rotation', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name', 'drop_Pose'])
 		_state_machine.userdata.bin_Content = ["empty","empty","empty","empty","empty","empty"]
 		_state_machine.userdata.bin = ' '
 		_state_machine.userdata.bin_frame = ' '
@@ -65,7 +65,6 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 		_state_machine.userdata.robot_Name = ' '
 		_state_machine.userdata.robot1_Name = 'arm1'
 		_state_machine.userdata.numberOfModels = 0
-		_state_machine.userdata.pick_Pose = []
 		_state_machine.userdata.pick_Offset = []
 		_state_machine.userdata.pick_Rotation = 1
 		_state_machine.userdata.drop_Pose = []
@@ -121,7 +120,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										setFirstTimePart(),
 										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'gasket_offset': 'gasket_offset', 'piston_offset': 'piston_offset', 'gear_offset': 'gear_offset'})
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
 
 			# x:152 y:390
 			OperatableStateMachine.add('setNewOffsetPosition',

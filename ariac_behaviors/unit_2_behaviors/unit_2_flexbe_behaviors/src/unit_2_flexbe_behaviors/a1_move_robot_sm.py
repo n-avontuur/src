@@ -8,7 +8,9 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from ariac_flexbe_states.compute_drop_ariac_state import ComputeDropState
+from ariac_flexbe_states.add_offset_to_pose_state import AddOffsetToPoseState
+from ariac_flexbe_states.compute_grasp_ariac_state import ComputeGraspAriacState
+from ariac_flexbe_states.create_pose import CreatePoseState
 from ariac_flexbe_states.get_vacuum_gripper_status_state import GetVacuumGripperStatusState
 from ariac_flexbe_states.moveit_to_joints_dyn_ariac_state import MoveitToJointsDynAriacState
 from ariac_flexbe_states.set_RobotParameters import set_Robot_Parameters
@@ -51,8 +53,9 @@ class a1_Move_RobotSM(Behavior):
 
 
 	def create(self):
+		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
 		# x:100 y:214, x:587 y:317
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['pick_Pose', 'pick_Offset', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config', 'pick_Offset', 'robot_Name'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['pick_Pose', 'pick_Rotation', 'drop_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config', 'pick_Offset', 'robot_Name'])
 		_state_machine.userdata.pick_Pose = []
 		_state_machine.userdata.pick_Offset = [0,0,0]
 		_state_machine.userdata.pick_Rotation = 0.0
@@ -65,6 +68,9 @@ class a1_Move_RobotSM(Behavior):
 		_state_machine.userdata.robot_name = ''
 		_state_machine.userdata.gripper_status_enabled = False
 		_state_machine.userdata.gripper_status_attached = False
+		_state_machine.userdata.height = 0
+		_state_machine.userdata.rotation = 0.0
+		_state_machine.userdata.offset = 0.0
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -79,12 +85,12 @@ class a1_Move_RobotSM(Behavior):
 										transitions={'finished': 'set_Robot_Parameters', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
-			# x:608 y:90
-			OperatableStateMachine.add('ComputePick',
-										ComputeDropState(joint_names=['linear_arm_actuator_joint','shoulder_pan_joint','shoulder_lift_joint','wrist_1_joint','wrist_2_joint','wrist_3_joint']),
-										transitions={'continue': 'move_To_Pick', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pick_Pose', 'offset': 'pick_Offset', 'rotation': 'pick_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+			# x:1035 y:538
+			OperatableStateMachine.add('addPoseToBinPose',
+										AddOffsetToPoseState(),
+										transitions={'continue': 'computePick_2'},
+										autonomy={'continue': Autonomy.Off},
+										remapping={'input_pose': 'drop_OffsetPose', 'offset_pose': 'drop_Pose', 'output_pose': 'drop_Pose'})
 
 			# x:1020 y:189
 			OperatableStateMachine.add('check_Gripper',
@@ -99,6 +105,27 @@ class a1_Move_RobotSM(Behavior):
 										transitions={'continue': 'move_To_PrePick_2', 'fail': 'wait_4'},
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'topic_name': 'gripper_status_topic', 'enabled': 'gripper_status_enabled', 'attached': 'gripper_status_attached'})
+
+			# x:609 y:110
+			OperatableStateMachine.add('computePick',
+										ComputeGraspAriacState(joint_names=joint_names),
+										transitions={'continue': 'move_To_Pick', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pick_Pose', 'offset': 'offset', 'rotation': 'rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+
+			# x:852 y:495
+			OperatableStateMachine.add('computePick_2',
+										ComputeGraspAriacState(joint_names=joint_names),
+										transitions={'continue': 'move_To_Pick_2', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'drop_Pose', 'offset': 'offset', 'rotation': 'rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+
+			# x:1025 y:400
+			OperatableStateMachine.add('createDropPose',
+										CreatePoseState(xyz=[0.0,0.0,0.035], rpy=[0.0,0.0,0.0]),
+										transitions={'continue': 'addPoseToBinPose', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'pose': 'drop_OffsetPose'})
 
 			# x:300 y:438
 			OperatableStateMachine.add('disable_Gripper',
@@ -131,14 +158,14 @@ class a1_Move_RobotSM(Behavior):
 			# x:1031 y:284
 			OperatableStateMachine.add('move_To_PreDrop',
 										SrdfStateToMoveitAriac(),
-										transitions={'reached': 'ComputeDrop', 'planning_failed': 'wait_3', 'control_failed': 'wait_3', 'param_error': 'move_To_PrePick'},
+										transitions={'reached': 'createDropPose', 'planning_failed': 'wait_3', 'control_failed': 'wait_3', 'param_error': 'failed'},
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'preDrop_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
 			# x:382 y:99
 			OperatableStateMachine.add('move_To_PrePick',
 										SrdfStateToMoveitAriac(),
-										transitions={'reached': 'ComputePick', 'planning_failed': 'wait', 'control_failed': 'wait', 'param_error': 'failed'},
+										transitions={'reached': 'computePick', 'planning_failed': 'wait', 'control_failed': 'wait', 'param_error': 'failed'},
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'prePick_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
@@ -197,13 +224,6 @@ class a1_Move_RobotSM(Behavior):
 										WaitState(wait_time=0.5),
 										transitions={'done': 'move_To_PrePick_2'},
 										autonomy={'done': Autonomy.Off})
-
-			# x:1013 y:410
-			OperatableStateMachine.add('ComputeDrop',
-										ComputeDropState(joint_names=['linear_arm_actuator_joint','shoulder_pan_joint','shoulder_lift_joint','wrist_1_joint','wrist_2_joint','wrist_3_joint']),
-										transitions={'continue': 'move_To_Pick_2', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'drop_Pose', 'offset': 'drop_Offset', 'rotation': 'drop_Rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
 
 		return _state_machine

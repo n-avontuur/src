@@ -65,7 +65,7 @@ Adapted to Ariac by: Gerard Harkema
 This state provides the joint configuration to grasp the box in the factory simulation of the MOOC "Hello (Real) World with ROS", given the pose of the box as provided by the DetectPartCameraState
 '''
 
-class ComputeGraspAriacState(EventState):
+class ComputeDropState(EventState):
 	'''
 	Computes the joint configuration needed to grasp the part given its pose.
 
@@ -85,7 +85,7 @@ class ComputeGraspAriacState(EventState):
 
 	def __init__(self, joint_names):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
-		super(ComputeGraspAriacState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'offsetz', 'rotation'], output_keys = ['joint_values','joint_names'])
+		super(ComputeDropState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'offsetz', 'rotation'], output_keys = ['joint_values','joint_names'])
 
 		self._joint_names = joint_names
 
@@ -100,7 +100,7 @@ class ComputeGraspAriacState(EventState):
 		# Main purpose is to check state conditions and trigger a corresponding outcome.
 		# If no outcome is returned, the state will stay active.
 
-		rospy.logwarn(userdata.pose)
+		rospy.logwarn(userdata.action_topic_namespace)
 
 		if self._failed == True:
 			return 'failed'
@@ -129,8 +129,8 @@ class ComputeGraspAriacState(EventState):
 		self._action_topic_namespace = userdata.action_topic_namespace
 		self._tool_link = userdata.tool_link
 
-		self._offsetz = userdata.offsetz
-		self._rotation = userdata.rotation
+		self._offsetz = userdata.offsetz[0]
+		self._rotation = userdata.rotation[0]
 
 		self._srv_name = userdata.action_topic_namespace + '/compute_ik'
 		self._ik_srv = ProxyServiceCaller({self._srv_name: GetPositionIK})
@@ -152,7 +152,7 @@ class ComputeGraspAriacState(EventState):
 
 		# the grasp pose is defined as being located on top of the item
 		target_pose.pose.position.z += self._offsetz + 0.0
-
+		
 
 		# rotate the object pose 180 degrees around - now works with -90???
 
@@ -181,6 +181,9 @@ class ComputeGraspAriacState(EventState):
 			self._failed = True
 
 	def on_exit(self, userdata):
+		# rospy.logwarn(userdata.joint_names)
+		# rospy.logwarn(userdata.joint_values)
+		rospy.logwarn(userdata.pose)
 		# This method is called when an outcome is returned and another state gets active.
 		# It can be used to stop possibly running processes started by on_enter.
 		pass # Nothing to do
