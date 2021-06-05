@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="Test_Drop_movement">
+
+	<executable package_path="unit_2_flexbe_behaviors.test_drop_movement_sm" class="Test_Drop_movementSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Sat Jun 05 2021</date>
+	<description>
+		This is for testing how to make a pose for dropping with offset's
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>
