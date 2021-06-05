@@ -85,7 +85,7 @@ class ComputeDropState(EventState):
 
 	def __init__(self, joint_names):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
-		super(ComputeDropState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'offsetz', 'rotation'], output_keys = ['joint_values','joint_names'])
+		super(ComputeDropState, self).__init__(outcomes = ['continue', 'failed'], input_keys = ['move_group', 'action_topic_namespace', 'tool_link','pose', 'offset', 'rotation'], output_keys = ['joint_values','joint_names'])
 
 		self._joint_names = joint_names
 
@@ -129,7 +129,7 @@ class ComputeDropState(EventState):
 		self._action_topic_namespace = userdata.action_topic_namespace
 		self._tool_link = userdata.tool_link
 
-		self._offsetz = userdata.offsetz[0]
+		self._offsetz = userdata.offset[2]
 		self._rotation = userdata.rotation[0]
 
 		self._srv_name = userdata.action_topic_namespace + '/compute_ik'

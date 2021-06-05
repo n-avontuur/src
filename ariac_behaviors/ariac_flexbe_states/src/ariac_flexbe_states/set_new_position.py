@@ -77,9 +77,9 @@ class setNewPosePart(EventState):
 			Logger.loginfo('X&Y not correct out table')
 
 		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z]
-		userdata.pick_Offset=self._offset_z
-		userdata.drop_Rotation=0.0
-		userdata.pick_Rotation=0.0
+		userdata.pick_Offset=[0.0,0.0,self._offset_z]
+		userdata.drop_Rotation=[0.0,0.0,0.0]
+		userdata.pick_Rotation=[0.0,0.0,0.0]
 		try:
 			liststr = ' '.join([str(elem) for elem in userdata.pick_Offset])
 			Logger.loginfo('pick offset: '+liststr)

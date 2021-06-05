@@ -12,10 +12,11 @@
 
 
 	<!-- Contained Behaviors -->
+	<contains name="Locate_Place_In_Empty_Bin" />
 	<contains name="a1_Robots_Home" />
+	<contains name="initGripper" />
 	<contains name="locate_Place_In_Bin_With_Content" />
 	<contains name="transport_ conveyor_to_pick_unit2_location" />
-	<contains name="Locate_Place_In_Empty_Bin" />
 
 	<!-- Available Parameters -->
 

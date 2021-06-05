@@ -16,7 +16,6 @@ from ariac_flexbe_states.set_Part import setPart
 from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.set_new_position import setNewPosePart
 from ariac_support_flexbe_states.equal_state import EqualState
-from flexbe_states.log_key_state import LogKeyState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 
@@ -53,7 +52,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
 		# x:28 y:217, x:213 y:236, x:230 y:350
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'bin_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Offset', 'pick_Rotation', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name', 'drop_Pose'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'bin_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Offset', 'pick_Rotation', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name', 'bin_Pose'])
 		_state_machine.userdata.bin_Content = ["empty","empty","empty","empty","empty","empty"]
 		_state_machine.userdata.bin = ' '
 		_state_machine.userdata.bin_frame = ' '
@@ -67,7 +66,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 		_state_machine.userdata.numberOfModels = 0
 		_state_machine.userdata.pick_Offset = []
 		_state_machine.userdata.pick_Rotation = 1
-		_state_machine.userdata.drop_Pose = []
+		_state_machine.userdata.bin_Pose = []
 		_state_machine.userdata.drop_Offset = []
 		_state_machine.userdata.drop_Rotation = 1
 		_state_machine.userdata.preDrop_Config = ''
@@ -101,13 +100,6 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'preDrop_Config'})
 
-			# x:13 y:273
-			OperatableStateMachine.add('printRobotName',
-										LogKeyState(text='pickOffset:', severity=Logger.REPORT_HINT),
-										transitions={'done': 'finished'},
-										autonomy={'done': Autonomy.Off},
-										remapping={'data': 'pick_Offset'})
-
 			# x:668 y:114
 			OperatableStateMachine.add('selectRobot',
 										selectRobot(),
@@ -125,7 +117,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 			# x:152 y:390
 			OperatableStateMachine.add('setNewOffsetPosition',
 										setNewPosePart(),
-										transitions={'continue': 'printRobotName', 'failed': 'failed', 'bin_Full': 'bin_Full'},
+										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'bin_Full'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
 										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'drop_Offset': 'drop_Offset', 'pick_Offset': 'pick_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Rotation': 'pick_Rotation'})
 
@@ -148,7 +140,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										GetObjectPoseState(),
 										transitions={'continue': 'useR1', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'ref_frame': 'ref_frame', 'frame': 'bin_frame', 'pose': 'drop_pose'})
+										remapping={'ref_frame': 'ref_frame', 'frame': 'bin_frame', 'pose': 'bin_Pose'})
 
 
 		return _state_machine

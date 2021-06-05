@@ -19,7 +19,7 @@ class setFirstTimePart(EventState):
 		gear_offset=[[-0.150,00.140],[0.000,00.140],[0.175,00.140]],[[-0.150,00.070],[0.000,00.070],[0.175,00.070]],[[-0.150,-0.070],[0.000,-0.070],[0.175,-0.070]],[[-0.150,-0.140],[0.000,-0.140],[0.175,-0.140]]
 		userdata.gasket=[[gasket_offset],[0.035],[0],[3,2]] #offsetXY,offsetZ,numberParts,matrixXY
 		userdata.piston=[[piston_offset],[0.035],[0],[3,3]] #offsetXY,offsetZ,numberParts,matrixXY
-		userdata.gear=[[piston_offset],[0.035],[0],[4,3]]	#offsetXY,offsetZ,numberParts,matrixXY
+		userdata.gear=[[gear_offset],[0.035],[0],[4,3]]	#offsetXY,offsetZ,numberParts,matrixXY
 		return 'continue'
 
 	def on_enter(self, userdata):

@@ -35,57 +35,72 @@
 # Authors: Gerard Harkema
 
 import rospy
+import rostopic
+import inspect
+
+import tf2_ros
+import tf2_geometry_msgs
+import geometry_msgs.msg
+from tf.transformations import *
+
 
 from flexbe_core import EventState, Logger
-from flexbe_core.proxy import ProxyServiceCaller
-from geometry_msgs.msg import Pose, PoseStamped
+from geometry_msgs.msg import Pose, Point, Vector3, Quaternion
+from flexbe_core.proxy import ProxySubscriberCached
 
 '''
 
-Created on Sep 5 2018
+Created on March 21, 2021
 
 @author: Gerard Harkema
 
 '''
 
-class AddOffsetToPoseState(EventState):
+class CreateDropPoseState(EventState):
 	'''
-	State to add an offset to a desired pose
+	Creats a pose
+	-- xyz			Point		Position
+	-- rpy			Vector3		Twist
+	#> pose			Pose		Output of the pose
 
-	># input_pose 	PoseStamped
-	># offset_pose	Pose
-	#> output_pose	PoseStamped
-	<= continue 		pose added
+	<= continue 				if the pose of the part has been succesfully obtained
+	<= failed 				otherwise
 
 	'''
 
 	def __init__(self):
 		# Declare outcomes, input_keys, and output_keys by calling the super constructor with the corresponding arguments.
-		super(AddOffsetToPoseState, self).__init__(outcomes = ['continue'], input_keys = ['input_pose', 'offset_pose'], output_keys = ['output_pose'])
+		super(CreateDropPoseState, self).__init__(input_keys=['xyz','rpy'],outcomes = ['continue', 'failed'], output_keys = ['pose'])
+		
+		
+
 
 
 	def execute(self, userdata):
-		# This method is called periodically while the state is active.
-		# Main purpose is to check state conditions and trigger a corresponding outcome.
-		# If no outcome is returned, the state will stay active.
-
-		userdata.output_pose = userdata.input_pose
-		#rospy.loginfo(userdata.output_pose)
-		#rospy.loginfo(userdata.offset_pose)
-
-		userdata.output_pose.pose.position.x = userdata.input_pose.pose.position.x + userdata.offset_pose.position.x
-		userdata.output_pose.pose.position.y = userdata.input_pose.pose.position.y + userdata.offset_pose.position.y
-		userdata.output_pose.pose.position.z = userdata.input_pose.pose.position.z + userdata.offset_pose.position.z
-		rospy.loginfo(userdata.offset_pose.position.z)
-		rospy.loginfo(userdata.output_pose)
+		self._pose = Pose()
+		self._pose.position.x = userdata.xyz[0]
+		self._pose.position.y = userdata.xyz[1]
+		self._pose.position.z = userdata.xyz[2]
+		q = quaternion_from_euler(userdata.rpy[0], userdata.rpy[1],userdata.rpy[2])	
+		self._pose.orientation = Quaternion(*q)
+		try:
+			Logger.loginfo('pose created :')
+			Logger.loginfo(str(self._pose.postition.x))
+			Logger.loginfo(str(self._pose.postition.y))
+			Logger.loginfo(str(self._pose.postition.z))
+		except:
+			Logger.loginfo('logging pose went wrong')
+		#rospy.logerr(self._pose)	
+		userdata.pose = self._pose
 		return 'continue'
-
 
 	def on_enter(self, userdata):
 		# This method is called when the state becomes active, i.e. a transition from another state to this one is taken.
 		# It is primarily used to start actions which are associated with this state.
+		pass # Nothing to do
 
-		pass
+
+
 	def on_exit(self, userdata):
 		# This method is called when an outcome is returned and another state gets active.
 		# It can be used to stop possibly running processes started by on_enter.
@@ -97,10 +112,13 @@ class AddOffsetToPoseState(EventState):
 		# This method is called when the behavior is started.
 		# If possible, it is generally better to initialize used resources in the constructor
 		# because if anything failed, the behavior would not even be started.
-		pass
+		self._start_time = rospy.Time.now()
 
 	def on_stop(self):
 		# This method is called whenever the behavior stops execution, also if it is cancelled.
 		# Use this event to clean up things like claimed resources.
 
 		pass # Nothing to do
+
+
+
