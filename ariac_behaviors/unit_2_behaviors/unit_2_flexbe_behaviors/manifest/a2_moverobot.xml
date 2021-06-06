@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<behavior name="a2_MoveRobot">
+
+	<executable package_path="unit_2_flexbe_behaviors.a2_moverobot_sm" class="a2_MoveRobotSM" />
+	<tagstring></tagstring>
+	<author>Niels Avontuur</author>
+	<date>Sun Jun 06 2021</date>
+	<description>
+		Version 2 of moving robot
+
+	</description>
+
+
+	<!-- Contained Behaviors -->
+
+	<!-- Available Parameters -->
+
+</behavior>

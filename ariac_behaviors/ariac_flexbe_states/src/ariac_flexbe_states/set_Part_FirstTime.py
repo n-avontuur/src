@@ -10,7 +10,7 @@ class setFirstTimePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setFirstTimePart,self).__init__(outcomes = ['continue', 'failed'], output_keys = ['gasket','piston','gear'])
+		super(setFirstTimePart,self).__init__(outcomes = ['continue', 'failed'], output_keys = ['gasket','piston','gear','bin_Content'])
 
 
 	def execute(self, userdata):
@@ -20,12 +20,15 @@ class setFirstTimePart(EventState):
 		userdata.gasket=[[gasket_offset],[0.035],[0],[3,2]] #offsetXY,offsetZ,numberParts,matrixXY
 		userdata.piston=[[piston_offset],[0.025],[0],[3,3]] #offsetXY,offsetZ,numberParts,matrixXY
 		userdata.gear=[[gear_offset],[0.035],[0],[4,3]]	#offsetXY,offsetZ,numberParts,matrixXY
+		self._content = ['empty','x']
+		
 		return 'continue'
 
 	def on_enter(self, userdata):
 		pass
 
 	def on_exit(self, userdata):
+		userdata.bin_Content=[self._content,self._content,self._content,self._content,self._content,self._content]
 		pass
 
 	def on_start(self):

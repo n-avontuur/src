@@ -101,7 +101,7 @@ class DetectTotalPartCameraAriacState(EventState):
 			for model in message.models:
 				i += 1
 			userdata.numberOfModels = i
-			Logger.loginfo('NumberOfParts:'+i)
+			Logger.loginfo('NumberOfParts:'+str(i))
 			return 'continue'
 
 			

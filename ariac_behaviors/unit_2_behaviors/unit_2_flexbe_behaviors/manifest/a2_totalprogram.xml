@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="a1_TotalProgram">
+<behavior name="a2_TotalProgram">
 
-	<executable package_path="unit_2_flexbe_behaviors.a1_totalprogram_sm" class="a1_TotalProgramSM" />
+	<executable package_path="unit_2_flexbe_behaviors.a2_totalprogram_sm" class="a2_TotalProgramSM" />
 	<tagstring></tagstring>
 	<author>Niels Avontuur</author>
 	<date>Fri Jun 04 2021</date>
 	<description>
-		test voor hele programma in een keer
+		Program Version 2
 	</description>
 
 

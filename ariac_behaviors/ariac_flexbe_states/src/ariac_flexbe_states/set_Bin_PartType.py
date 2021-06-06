@@ -15,32 +15,32 @@ class setBinPartType(EventState):
 	'''
 
 	def __init__(self):
-		super(setBinPartType,self).__init__(input_keys = ["bin","part","bin_Content" ],outcomes = ['continue', 'failed'], output_keys = ['bin_Content'])
+		super(setBinPartType,self).__init__(input_keys = ["bin","part_Type","bin_Content" ],outcomes = ['continue', 'failed'], output_keys = ['bin_Content'])
 
 
 	def execute(self, userdata):
-		if userdata.bin == "bin1":
+		if userdata.bin == "bin1" and userdata.bin_Content[0][0]=="empty":
 			userdata.bin_Content[0][0]='used'
 			userdata.bin_Content[0][1]=self._part
-		elif userdata.bin == "bin2":
+		elif userdata.bin == "bin2" and userdata.bin_Content[1][0]=="empty":
 			userdata.bin_Content[1][0]='used'
 			userdata.bin_Content[1][1]=self._part
-		elif userdata.bin == "bin3":
+		elif userdata.bin == "bin3" and userdata.bin_Content[2][0]=="empty":
 			userdata.bin_Content[2][0]='used'
 			userdata.bin_Content[2][1]=self._part
-		elif userdata.bin == "bin4":
+		elif userdata.bin == "bin4" and userdata.bin_Content[3][0]=="empty":
 			userdata.bin_Content[3][0]='used'
 			userdata.bin_Content[3][1]=self._part
-		elif userdata.bin == "bin5":
+		elif userdata.bin == "bin5" and userdata.bin_Content[4][0]=="empty":
 			userdata.bin_Content[4][0]='used'
 			userdata.bin_Content[4][1]=self._part
-		elif userdata.bin == "bin6":
+		elif userdata.bin == "bin6" and userdata.bin_Content[5][0]=="empty":
 			userdata.bin_Content[5][0]='used'
 			userdata.bin_Content[5][1]=self._part
 		return 'continue'
 
 	def on_enter(self, userdata):
-		self._part = userdata.part
+		self._part = userdata.part_Type
 		pass
 
 	def on_exit(self, userdata):

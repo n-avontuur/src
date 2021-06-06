@@ -14,13 +14,13 @@ class getEmptyBin(EventState):
 	'''
 
 	def __init__(self):
-		super(getEmptyBin,self).__init__(input_keys = ['binPartType'],outcomes = ['continue', 'failed'], output_keys = ['bin','bin_frame'])
+		super(getEmptyBin,self).__init__(input_keys = ['bin_Content'],outcomes = ['continue', 'failed'], output_keys = ['bin','bin_frame'])
 
 
 	def execute(self, userdata):
 		try :
-			for i in range(len(userdata.binPartType)):
-				if userdata.binPartType[i] == 'empty' or  userdata.binPartType[i] == 'Empty':
+			for i in range(len(userdata.bin_Content)):
+				if userdata.bin_Content[i][0] == 'empty' or  userdata.bin_Content[i][0] == 'Empty':
 					i = i + 1
 					userdata.bin = 'bin'+ str(i)
 					userdata.bin_frame = 'bin'+ str(i) + '_frame'

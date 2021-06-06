@@ -52,7 +52,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
 		# x:28 y:217, x:213 y:236, x:230 y:350
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'bin_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Offset', 'pick_Rotation', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name', 'bin_Pose'])
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'system_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Offset', 'pick_Rotation', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name', 'bin_Pose'])
 		_state_machine.userdata.bin_Content = ["empty","empty","empty","empty","empty","empty"]
 		_state_machine.userdata.bin = ' '
 		_state_machine.userdata.bin_frame = ' '
@@ -84,7 +84,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										getEmptyBin(),
 										transitions={'continue': 'setFirstTimeParts', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'binPartType': 'bin_Content', 'bin': 'bin', 'bin_frame': 'bin_frame'})
+										remapping={'bin_Content': 'bin_Content', 'bin': 'bin', 'bin_frame': 'bin_frame'})
 
 			# x:439 y:345
 			OperatableStateMachine.add('getPreGraspR1',
@@ -117,7 +117,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 			# x:152 y:390
 			OperatableStateMachine.add('setNewOffsetPosition',
 										setNewPosePart(),
-										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'bin_Full'},
+										transitions={'continue': 'finished', 'failed': 'failed', 'bin_Full': 'system_Full'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'bin_Full': Autonomy.Off},
 										remapping={'part_Content': 'part_Content', 'numberOfModels': 'numberOfModels', 'drop_Offset': 'drop_Offset', 'pick_Offset': 'pick_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Rotation': 'pick_Rotation'})
 
