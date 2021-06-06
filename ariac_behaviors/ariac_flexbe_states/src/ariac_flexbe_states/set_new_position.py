@@ -11,7 +11,7 @@ class setNewPosePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset','drop_Rotation','pick_Rotation'])
+		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset','drop_Rotation','pick_Rotation','numberOfModels'])
 
 	def on_enter(self, userdata):
 		try:
@@ -90,6 +90,7 @@ class setNewPosePart(EventState):
 		return 'continue'
 
 	def on_exit(self, userdata):
+		userdata.numberOfModels = self._numberParts
 		pass
 
 	def on_start(self):

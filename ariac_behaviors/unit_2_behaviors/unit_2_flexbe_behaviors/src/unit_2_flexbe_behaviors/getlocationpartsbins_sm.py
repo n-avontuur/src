@@ -8,7 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from ariac_flexbe_states.setBinPartType import setBinPartType
+from ariac_flexbe_states.set_Bin_PartType import setBinPartType
 from ariac_logistics_flexbe_states.get_material_locations import GetMaterialLocationsState
 from ariac_support_flexbe_states.get_item_from_list_state import GetItemFromListState
 from ariac_support_flexbe_states.replace_state import ReplaceState
@@ -25,7 +25,6 @@ Created on Sat May 29 2021
 class GetLocationPartsBinsSM(Behavior):
 	'''
 	Add part to bin content
-
 	'''
 
 
@@ -48,9 +47,9 @@ class GetLocationPartsBinsSM(Behavior):
 
 	def create(self):
 		# x:771 y:503, x:834 y:291
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['binPartType'], output_keys=['binPartType'])
-		_state_machine.userdata.binPartType = ['empty','empty','empty','empty','empty','empty']
-		_state_machine.userdata.part = ''
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['bin_Content'], output_keys=['bin_Content'])
+		_state_machine.userdata.bin_Content = ['empty','empty','empty','empty','empty','empty']
+		_state_machine.userdata.part_Type = []
 		_state_machine.userdata.locations = []
 		_state_machine.userdata.zero = 0
 		_state_machine.userdata.gasket = 'gasket_part'
@@ -125,21 +124,21 @@ class GetLocationPartsBinsSM(Behavior):
 										setBinPartType(),
 										transitions={'continue': 'replacePart_2', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'bin': 'bin', 'part': 'part', 'binPartType': 'binPartType'})
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:638 y:173
 			OperatableStateMachine.add('setPartTypeInBins_2',
 										setBinPartType(),
 										transitions={'continue': 'replacePart_2_2', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'bin': 'bin', 'part': 'part', 'binPartType': 'binPartType'})
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:637 y:369
 			OperatableStateMachine.add('setPartTypeInBins_2_2',
 										setBinPartType(),
 										transitions={'continue': 'finished', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'bin': 'bin', 'part': 'part', 'binPartType': 'binPartType'})
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:416 y:53
 			OperatableStateMachine.add('getBin',

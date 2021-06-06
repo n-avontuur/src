@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<behavior name="GetLocationPartsBins">
+<behavior name="GetLocationPartsBinsV2">
 
-	<executable package_path="unit_2_flexbe_behaviors.getlocationpartsbins_sm" class="GetLocationPartsBinsSM" />
+	<executable package_path="unit_2_flexbe_behaviors.getlocationpartsbinsv2_sm" class="GetLocationPartsBinsV2SM" />
 	<tagstring></tagstring>
 	<author>niels avontuur</author>
 	<date>Sat May 29 2021</date>

@@ -15,7 +15,7 @@ class setBinPartType(EventState):
 	'''
 
 	def __init__(self):
-		super(setBinPartType,self).__init__(input_keys = ["bin","part_Type","bin_Content" ],outcomes = ['continue', 'failed'], output_keys = ['bin_Content'])
+		super(setBinPartType,self).__init__(input_keys = ["bin","part_Type","bin_Content" ],outcomes = ['continue'], output_keys = ['bin_Content'])
 
 
 	def execute(self, userdata):
