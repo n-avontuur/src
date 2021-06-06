@@ -18,6 +18,8 @@ class getEmptyBin(EventState):
 
 
 	def execute(self, userdata):
+		liststr = ' '.join([str(elem) for elem in userdata.bin_Content])
+		Logger.loginfo('bin Content: '+liststr)
 		try :
 			for i in range(len(userdata.bin_Content)):
 				if userdata.bin_Content[i][0] == 'empty' or  userdata.bin_Content[i][0] == 'Empty':

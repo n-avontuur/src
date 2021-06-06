@@ -8,10 +8,10 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
+from ariac_flexbe_states.get_Bin_PartType import getBinPartType
+from ariac_flexbe_states.set_Bin_PartType copy import setBinPartType
 from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.start_assignment_state import StartAssignment
-from ariac_logistics_flexbe_states.get_material_locations import GetMaterialLocationsState
-from ariac_support_flexbe_states.get_item_from_list_state import GetItemFromListState
 from unit_2_flexbe_behaviors.a1_robots_home_sm import a1_Robots_HomeSM
 from unit_2_flexbe_behaviors.a2_moverobot_sm import a2_MoveRobotSM
 from unit_2_flexbe_behaviors.getlocationpartsbinsv2_sm import GetLocationPartsBinsV2SM
@@ -99,23 +99,16 @@ class a2_TotalProgramSM(Behavior):
 			# x:355 y:383
 			OperatableStateMachine.add('a2_MoveRobot',
 										self.use_behavior(a2_MoveRobotSM, 'a2_MoveRobot'),
-										transitions={'finished': 'a1_Robots_Home', 'failed': 'failed'},
+										transitions={'finished': 'setPartInBin', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'robot_Name': 'robot_Name', 'preDrop_Config': 'preDrop_Config', 'prePick_Config': 'prePick_Config', 'bin_Pose': 'bin_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Pose': 'pick_Pose'})
 
-			# x:1167 y:238
-			OperatableStateMachine.add('getLocationOfAllParts',
-										GetMaterialLocationsState(),
-										transitions={'continue': 'getPartLocation'},
-										autonomy={'continue': Autonomy.Off},
-										remapping={'part': 'part_Type', 'material_locations': 'locations'})
-
-			# x:1166 y:327
-			OperatableStateMachine.add('getPartLocation',
-										GetItemFromListState(),
-										transitions={'done': 'locate_Place_In_Bin_With_Content', 'invalid_index': 'Locate_Place_In_Empty_Bin'},
-										autonomy={'done': Autonomy.Off, 'invalid_index': Autonomy.Off},
-										remapping={'list': 'locations', 'index': 'zero', 'item': 'bin'})
+			# x:1116 y:354
+			OperatableStateMachine.add('getBin',
+										getBinPartType(),
+										transitions={'continue': 'locate_Place_In_Bin_With_Content', 'useEmptyBin': 'Locate_Place_In_Empty_Bin'},
+										autonomy={'continue': Autonomy.Off, 'useEmptyBin': Autonomy.Off},
+										remapping={'part_Type': 'part_Type', 'bin_Content': 'bin_Content', 'bin': 'bin'})
 
 			# x:1127 y:46
 			OperatableStateMachine.add('initGripper',
@@ -137,10 +130,17 @@ class a2_TotalProgramSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content'})
 
+			# x:271 y:295
+			OperatableStateMachine.add('setPartInBin',
+										setBinPartType(),
+										transitions={'continue': 'a1_Robots_Home'},
+										autonomy={'continue': Autonomy.Off},
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+
 			# x:1079 y:156
 			OperatableStateMachine.add('transport_ conveyor_to_pick_unit2_location',
 										self.use_behavior(transport_conveyor_to_pick_unit2_locationSM, 'transport_ conveyor_to_pick_unit2_location'),
-										transitions={'finished': 'getLocationOfAllParts', 'failed': 'failed'},
+										transitions={'finished': 'getBin', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'pick_Pose': 'pick_Pose', 'part_Type': 'part_Type'})
 

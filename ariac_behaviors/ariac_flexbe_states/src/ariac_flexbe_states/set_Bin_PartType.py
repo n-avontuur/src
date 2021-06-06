@@ -20,23 +20,17 @@ class setBinPartType(EventState):
 
 	def execute(self, userdata):
 		if userdata.bin == "bin1" and userdata.bin_Content[0][0]=="empty":
-			userdata.bin_Content[0][0]='used'
-			userdata.bin_Content[0][1]=self._part
+			userdata.bin_Content[0]=['used',self._part]
 		elif userdata.bin == "bin2" and userdata.bin_Content[1][0]=="empty":
-			userdata.bin_Content[1][0]='used'
-			userdata.bin_Content[1][1]=self._part
+			userdata.bin_Content[1]=['used',self._part]
 		elif userdata.bin == "bin3" and userdata.bin_Content[2][0]=="empty":
-			userdata.bin_Content[2][0]='used'
-			userdata.bin_Content[2][1]=self._part
+			userdata.bin_Content[2]=['used',self._part]
 		elif userdata.bin == "bin4" and userdata.bin_Content[3][0]=="empty":
-			userdata.bin_Content[3][0]='used'
-			userdata.bin_Content[3][1]=self._part
+			userdata.bin_Content[3]=['used',self._part]
 		elif userdata.bin == "bin5" and userdata.bin_Content[4][0]=="empty":
-			userdata.bin_Content[4][0]='used'
-			userdata.bin_Content[4][1]=self._part
+			userdata.bin_Content[4]=['used',self._part]
 		elif userdata.bin == "bin6" and userdata.bin_Content[5][0]=="empty":
-			userdata.bin_Content[5][0]='used'
-			userdata.bin_Content[5][1]=self._part
+			userdata.bin_Content[5]=['used',self._part]
 		return 'continue'
 
 	def on_enter(self, userdata):

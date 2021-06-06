@@ -152,7 +152,7 @@ class DetectFirstPartCameraAriacState(EventState):
 	def on_exit(self, userdata):
 		# This method is called when an outcome is returned and another state gets active.
 		# It can be used to stop possibly running processes started by on_enter.
-
+		Logger.loginfo("found part :"+ str(userdata.part))
 		pass # Nothing to do
 
 

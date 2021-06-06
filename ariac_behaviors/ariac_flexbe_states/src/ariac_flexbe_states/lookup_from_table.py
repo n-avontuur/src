@@ -82,7 +82,7 @@ class LookupFromTableState(EventState):
                         for index_column in table.iter(self._index_title):
                             #Logger.loginfo(index_column.attrib['name'])
                             if userdata.index_value == index_column.attrib['name']:
-                                Logger.loginfo("Found")
+                                #Logger.loginfo("Found")
                                 for column in index_column.iter(self._column_title):
                                     Logger.loginfo(column.attrib['value'])
                                     userdata.column_value = column.attrib['value']

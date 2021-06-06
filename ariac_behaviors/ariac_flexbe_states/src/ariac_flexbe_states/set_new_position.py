@@ -14,11 +14,10 @@ class setNewPosePart(EventState):
 		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset','drop_Rotation','pick_Rotation','numberOfModels'])
 
 	def on_enter(self, userdata):
-		try:
-			offset=userdata.part_Content[0]
-			self._offset=offset[0]
-		except:
-			Logger.logwarn('offsetX or Y not correct' )
+		offset=userdata.part_Content[0]
+		self._offset=offset[0]
+		liststr = ' '.join([str(elem) for elem in offset])
+		rospy.loginfo('list of offset: ' + liststr)
 
 		try:
 			offset_z=userdata.part_Content[1]		
@@ -70,6 +69,7 @@ class setNewPosePart(EventState):
 		except:
 			Logger.loginfo('table wasnt made')
 
+		rospy.loginfo(offset[0])
 		try:
 			self._offset_x=offset[0]
 			self._offset_y=offset[1]	

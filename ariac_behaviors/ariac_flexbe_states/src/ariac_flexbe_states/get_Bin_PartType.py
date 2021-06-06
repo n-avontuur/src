@@ -19,20 +19,12 @@ class getBinPartType(EventState):
 
 
 	def execute(self, userdata):
-		if userdata.bin_Content[0][1]==self._part and userdata.bin_Content[0][0]=="used":
-			userdata.bin = "bin1"
-		elif userdata.bin_Content[1][1]==self._part and userdata.bin_Content[1][0]=="used":
-			userdata.bin = "bin2"
-		elif userdata.bin_Content[2][1]==self._part and userdata.bin_Content[2][0]=="used":
-			userdata.bin = "bin3"
-		elif userdata.bin_Content[3][1]==self._part and userdata.bin_Content[3][0]=="used":
-			userdata.bin = "bin4"
-		elif userdata.bin_Content[4][1]==self._part and userdata.bin_Content[4][0]=="used":
-			userdata.bin = "bin5"
-		elif userdata.bin_Content[5][1]==self._part and userdata.bin_Content[5][0]=="used":
-			userdata.bin = "bin6"
-		else :
-			return 'useEmptyBin'
+		for i in userdata.bin_Content:
+			bin=userdata.bin_Content[i]
+			status =bin[0]
+			part_Type = bin[1]
+			if part_Type == userdata.part_Type:
+				userdata.bin = ('bin'+ str(i))
 		return 'continue'
 
 	def on_enter(self, userdata):

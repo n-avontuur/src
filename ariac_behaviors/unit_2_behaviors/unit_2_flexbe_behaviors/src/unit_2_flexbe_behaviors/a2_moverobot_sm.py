@@ -32,7 +32,6 @@ Created on Sun Jun 06 2021
 class a2_MoveRobotSM(Behavior):
 	'''
 	Version 2 of moving robot
-
 	'''
 
 
@@ -85,6 +84,13 @@ class a2_MoveRobotSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'robot_Name': 'robot_Name', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'tool_link': 'tool_link', 'gripper_service': 'gripper_service', 'gripper_status_topic': 'gripper_status_topic', 'gripper_status_attached': 'gripper_status_attached', 'gripper_status_enabled': 'gripper_status_enabled', 'prePick_Config': 'prePick_Config', 'robot_name': 'robot_name'})
 
+			# x:772 y:134
+			OperatableStateMachine.add('addDecreasePose_2',
+										AddOffsetToPoseState(),
+										transitions={'continue': 'computePick'},
+										autonomy={'continue': Autonomy.Off},
+										remapping={'input_pose': 'pick_Pose', 'offset_pose': 'pose_Decrease', 'output_pose': 'pick_Pose'})
+
 			# x:1572 y:400
 			OperatableStateMachine.add('addDropOffsetPose',
 										AddOffsetToPoseState(),
@@ -134,6 +140,13 @@ class a2_MoveRobotSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'pose': 'pose_Decrease'})
 
+			# x:751 y:221
+			OperatableStateMachine.add('createDecreasePick_2',
+										CreatePoseState(xyz=[0.0,0.0,0.002], rpy=[0.0,0.0,0.0]),
+										transitions={'continue': 'addDecreasePose_2', 'failed': 'failed'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										remapping={'pose': 'pose_Decrease'})
+
 			# x:1576 y:290
 			OperatableStateMachine.add('createDropOffsetPose',
 										CreateDropPoseState(),
@@ -179,7 +192,7 @@ class a2_MoveRobotSM(Behavior):
 			# x:984 y:38
 			OperatableStateMachine.add('moveToPick',
 										MoveitToJointsDynAriacState(),
-										transitions={'reached': 'setGripperOn', 'planning_failed': 'wait_2', 'control_failed': 'wait_2'},
+										transitions={'reached': 'setGripperOn', 'planning_failed': 'createDecreasePick_2', 'control_failed': 'createDecreasePick_2'},
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off},
 										remapping={'action_topic_namespace': 'action_topic_namespace', 'move_group': 'move_group', 'action_topic': 'action_topic', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
@@ -215,12 +228,6 @@ class a2_MoveRobotSM(Behavior):
 			OperatableStateMachine.add('wait',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'moveToPrePick'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:1004 y:153
-			OperatableStateMachine.add('wait_2',
-										WaitState(wait_time=0.5),
-										transitions={'done': 'moveToPick'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:1437 y:40

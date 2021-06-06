@@ -15,7 +15,7 @@ class getNewBinPartType(EventState):
 	'''
 
 	def __init__(self):
-		super(getNewBinPartType,self).__init__(input_keys = ['bin',"part_Type","bin_Content" ],outcomes = ['continue', "findEmptyBin"], output_keys = ['bin'])
+		super(getNewBinPartType,self).__init__(input_keys = ['bin',"part_Type","bin_Content" ],outcomes = ['continue', "findEmptyBin"], output_keys = ['bin','bin_frame'])
 
 
 	def execute(self, userdata):
@@ -35,17 +35,14 @@ class getNewBinPartType(EventState):
 
 		while i < 6:
 			self._binUsed=userdata.bin_Content[i]
-			try:
-				if self._binUsed[0]=="used" and self._binUsed[1]==self._part:
-					i = i + 1
-					userdata.bin = ('bin'+ str(i))
-					userdata.bin_frame = ('bin'+ str(i) + '_frame')
-					Logger.loginfo('New Bin selected')
-					return 'continue'
-				else :
-					i= i+1
-			except:
-				Logger.logwarn('reading secondpart went wrong')
+			if self._binUsed[0]=="used" and self._binUsed[1]==self._part:
+				i = i + 1
+				userdata.bin = ('bin'+ str(i))
+				userdata.bin_frame = ('bin'+ str(i) + '_frame')
+				Logger.loginfo('New Bin selected')
+				return 'continue'
+			else :
+				i= i+1
 		return 'findEmptyBin'
 	def on_enter(self, userdata):
 		self._part = userdata.part_Type
