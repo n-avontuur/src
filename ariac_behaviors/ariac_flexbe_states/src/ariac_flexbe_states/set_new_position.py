@@ -42,14 +42,11 @@ class setNewPosePart(EventState):
 
 
 	def execute(self, userdata):
-		x=0
-		y=0
 		max_X=self._maxNumberPartsX
 		max_Y=self._maxNumberPartsY
 		max_parts=max_Y*max_X
 		numberOfParts=self._numberParts
-		col=[]
-		row=[]
+		offset=[]
 		try:
 			if (self._numberParts == max_parts):
 				self._numberParts = 0
@@ -59,18 +56,17 @@ class setNewPosePart(EventState):
 				for j in range(max_Y):
 					matrix[i][j] = i*max_Y+j
 			liststr = ' '.join([str(elem) for elem in matrix])
-			#Logger.loginfo('row:'+liststr)
+			Logger.loginfo('row:'+liststr)
 			for i in range(max_X):
 				for j in range(max_Y):
 					if ((numberOfParts+1) == matrix[i][j]):
-						x=i
-						y=j
 						offset=self._offset[i][j]
 		except:
 			Logger.loginfo('table wasnt made')
 
-		rospy.loginfo(offset[0])
+		
 		try:
+			rospy.loginfo(offset)
 			self._offset_x=offset[0]
 			self._offset_y=offset[1]	
 		except:

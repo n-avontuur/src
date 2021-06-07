@@ -71,7 +71,7 @@ class transport_conveyor_to_pick_unit2_locationSM(Behavior):
 										transitions={'done': 'conveyorON'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:831 y:111
+			# x:957 y:98
 			OperatableStateMachine.add('conveyorOFF',
 										SetConveyorbeltPowerState(),
 										transitions={'continue': 'detectPartOnConveyor', 'fail': 'failed'},
@@ -85,7 +85,7 @@ class transport_conveyor_to_pick_unit2_locationSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'fail': Autonomy.Off},
 										remapping={'power': 'powerON'})
 
-			# x:1055 y:52
+			# x:1353 y:54
 			OperatableStateMachine.add('detectPartOnConveyor',
 										DetectFirstPartCameraAriacState(part_list=part_list, time_out=0.5),
 										transitions={'continue': 'finished', 'failed': 'failed', 'not_found': 'conveyorON'},
@@ -98,10 +98,16 @@ class transport_conveyor_to_pick_unit2_locationSM(Behavior):
 										transitions={'done': 'checkBreamBeam'},
 										autonomy={'done': Autonomy.Off})
 
+			# x:799 y:94
+			OperatableStateMachine.add('wait_3',
+										WaitState(wait_time=0.5),
+										transitions={'done': 'conveyorOFF'},
+										autonomy={'done': Autonomy.Off})
+
 			# x:637 y:102
 			OperatableStateMachine.add('checkBreamBeam',
 										SubscriberState(topic=breakbeam, blocking=True, clear=True),
-										transitions={'received': 'conveyorOFF', 'unavailable': 'failed'},
+										transitions={'received': 'wait_3', 'unavailable': 'failed'},
 										autonomy={'received': Autonomy.Off, 'unavailable': Autonomy.Off},
 										remapping={'message': 'message'})
 

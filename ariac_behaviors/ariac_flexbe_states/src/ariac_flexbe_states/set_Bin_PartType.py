@@ -31,6 +31,8 @@ class setBinPartType(EventState):
 			userdata.bin_Content[4]=['used',self._part]
 		elif userdata.bin == "bin6" and userdata.bin_Content[5][0]=="empty":
 			userdata.bin_Content[5]=['used',self._part]
+		liststr = ' '.join([str(elem) for elem in userdata.bin_Content])
+		Logger.loginfo('row:'+liststr)
 		return 'continue'
 
 	def on_enter(self, userdata):

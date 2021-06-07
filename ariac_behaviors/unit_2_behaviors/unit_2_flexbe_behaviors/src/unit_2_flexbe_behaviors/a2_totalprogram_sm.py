@@ -9,7 +9,7 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.get_Bin_PartType import getBinPartType
-from ariac_flexbe_states.set_Bin_PartType copy import setBinPartType
+from ariac_flexbe_states.set_Bin_PartType import setBinPartType
 from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.start_assignment_state import StartAssignment
 from unit_2_flexbe_behaviors.a1_robots_home_sm import a1_Robots_HomeSM

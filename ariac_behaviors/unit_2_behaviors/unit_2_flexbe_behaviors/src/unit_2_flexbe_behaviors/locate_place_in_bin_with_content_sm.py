@@ -111,7 +111,7 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 										getNewBinPartType(),
 										transitions={'continue': 'selectRobot', 'findEmptyBin': 'getEmptyBin'},
 										autonomy={'continue': Autonomy.Off, 'findEmptyBin': Autonomy.Off},
-										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content', 'bin_frame': 'bin_frame'})
 
 			# x:257 y:448
 			OperatableStateMachine.add('getPreGraspR1',
@@ -136,7 +136,7 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 
 			# x:894 y:341
 			OperatableStateMachine.add('lookUpCarmeraFrame_2',
-										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='camera_frame'),
+										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R2', index_title='bin', column_title='camera_frame'),
 										transitions={'found': 'lookUpCarmeraTopic_2', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_frame'})
@@ -150,7 +150,7 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 
 			# x:897 y:415
 			OperatableStateMachine.add('lookUpCarmeraTopic_2',
-										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R1', index_title='bin', column_title='camera_topic'),
+										LookupFromTableState(parameter_name=parameter_name, table_name='bin_configuration_R2', index_title='bin', column_title='camera_topic'),
 										transitions={'found': 'detectNumberOfParts_2', 'not_found': 'failed'},
 										autonomy={'found': Autonomy.Off, 'not_found': Autonomy.Off},
 										remapping={'index_value': 'bin', 'column_value': 'camera_topic'})

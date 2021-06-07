@@ -54,7 +54,7 @@ class a2_MoveRobotSM(Behavior):
 
 	def create(self):
 		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
-		# x:30 y:463, x:618 y:373
+		# x:30 y:463, x:554 y:386
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['pick_Offset', 'pick_Rotation', 'robot_Name', 'preDrop_Config', 'prePick_Config', 'bin_Pose', 'drop_Offset', 'drop_Rotation', 'pick_Pose'])
 		_state_machine.userdata.offset = 0.0
 		_state_machine.userdata.rotation = 0.0
@@ -69,6 +69,7 @@ class a2_MoveRobotSM(Behavior):
 		_state_machine.userdata.drop_Offset = []
 		_state_machine.userdata.drop_Rotation = []
 		_state_machine.userdata.pick_Pose = []
+		_state_machine.userdata.home_Config = ''
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -82,7 +83,7 @@ class a2_MoveRobotSM(Behavior):
 										set_Robot_Parameters(),
 										transitions={'continue': 'createPickOffsetPose', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'robot_Name': 'robot_Name', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'tool_link': 'tool_link', 'gripper_service': 'gripper_service', 'gripper_status_topic': 'gripper_status_topic', 'gripper_status_attached': 'gripper_status_attached', 'gripper_status_enabled': 'gripper_status_enabled', 'prePick_Config': 'prePick_Config', 'robot_name': 'robot_name'})
+										remapping={'robot_Name': 'robot_Name', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'tool_link': 'tool_link', 'gripper_service': 'gripper_service', 'gripper_status_topic': 'gripper_status_topic', 'gripper_status_attached': 'gripper_status_attached', 'gripper_status_enabled': 'gripper_status_enabled', 'prePick_Config': 'prePick_Config', 'robot_name': 'robot_name', 'home_Config': 'home_Config'})
 
 			# x:772 y:134
 			OperatableStateMachine.add('addDecreasePose_2',
@@ -129,7 +130,7 @@ class a2_MoveRobotSM(Behavior):
 			# x:768 y:27
 			OperatableStateMachine.add('computePick',
 										ComputeGraspAriacState(joint_names=joint_names),
-										transitions={'continue': 'moveToPick', 'failed': 'failed'},
+										transitions={'continue': 'moveToPick', 'failed': 'moveHome'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'tool_link': 'tool_link', 'pose': 'pick_Pose', 'offset': 'offset', 'rotation': 'rotation', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
@@ -182,6 +183,13 @@ class a2_MoveRobotSM(Behavior):
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'preDrop_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
+			# x:630 y:106
+			OperatableStateMachine.add('moveHome',
+										SrdfStateToMoveitAriac(),
+										transitions={'reached': 'wait', 'planning_failed': 'wait_7', 'control_failed': 'wait_7', 'param_error': 'failed'},
+										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
+										remapping={'config_name': 'home_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+
 			# x:669 y:731
 			OperatableStateMachine.add('moveToDrop',
 										MoveitToJointsDynAriacState(),
@@ -224,7 +232,7 @@ class a2_MoveRobotSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'service_name': 'gripper_service'})
 
-			# x:601 y:165
+			# x:480 y:162
 			OperatableStateMachine.add('wait',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'moveToPrePick'},
@@ -264,6 +272,12 @@ class a2_MoveRobotSM(Behavior):
 			OperatableStateMachine.add('wait_6',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'moveBackToPreDrop'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:480 y:224
+			OperatableStateMachine.add('wait_7',
+										WaitState(wait_time=0.5),
+										transitions={'done': 'moveHome'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:1026 y:248

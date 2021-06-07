@@ -14,7 +14,7 @@ class set_Robot_Parameters(EventState):
 	'''
 
 	def __init__(self):
-		super(set_Robot_Parameters,self).__init__(input_keys = ['robot_Name'],outcomes = ['continue', 'failed'], output_keys = ['move_group','action_topic_namespace','action_topic','tool_link','gripper_service','gripper_status_topic','gripper_status_attached','gripper_status_enabled','prePick_Config','robot_name'])
+		super(set_Robot_Parameters,self).__init__(input_keys = ['robot_Name'],outcomes = ['continue', 'failed'], output_keys = ['move_group','action_topic_namespace','action_topic','tool_link','gripper_service','gripper_status_topic','gripper_status_attached','gripper_status_enabled','prePick_Config','robot_name','home_Config'])
 
 
 	def execute(self, userdata):
@@ -27,6 +27,7 @@ class set_Robot_Parameters(EventState):
 			userdata.gripper_service = '/ariac/arm1/gripper/control'
 			userdata.gripper_status_topic = '/ariac/arm1/gripper/state'
 			userdata.prePick_Config = 'conveyorR1'
+			userdata.home_Config = 'homeR1'
 		elif userdata.robot_Name == 'arm2':
 			userdata.move_group = 'manipulator'
 			userdata.action_topic_namespace = '/ariac/arm2'
@@ -36,6 +37,7 @@ class set_Robot_Parameters(EventState):
 			userdata.gripper_service = '/ariac/arm2/gripper/control'
 			userdata.gripper_status_topic = '/ariac/arm2/gripper/state'
 			userdata.prePick_Config = 'conveyorR2'
+			userdata.home_Config = 'homeR2'
 		return 'continue'
 
 

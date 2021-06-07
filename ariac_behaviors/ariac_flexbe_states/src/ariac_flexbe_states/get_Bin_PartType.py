@@ -19,12 +19,15 @@ class getBinPartType(EventState):
 
 
 	def execute(self, userdata):
-		for i in userdata.bin_Content:
-			bin=userdata.bin_Content[i]
-			status =bin[0]
-			part_Type = bin[1]
-			if part_Type == userdata.part_Type:
-				userdata.bin = ('bin'+ str(i))
+		i = 0
+		for i in range(len(userdata.bin_Content)):
+			try:
+				bin=userdata.bin_Content[i]
+				part_Type = bin[1]
+				if part_Type == userdata.part_Type:
+					userdata.bin = ('bin'+ str(i+1))
+			except:
+				Logger.loginfo('get bin error')
 		return 'continue'
 
 	def on_enter(self, userdata):
