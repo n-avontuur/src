@@ -20,18 +20,18 @@ class getEmptyBin(EventState):
 	def execute(self, userdata):
 		liststr = ' '.join([str(elem) for elem in userdata.bin_Content])
 		Logger.loginfo('bin Content: '+liststr)
-		try :
-			for i in range(len(userdata.bin_Content)):
-				bin_content = userdata.bin_Content[i]
-				if bin_content[0] == 'empty' or  bin_content[0] == 'Empty':
-					i = i + 1
-					userdata.bin = 'bin'+ str(i)
-					userdata.bin_frame = 'bin'+ str(i) + '_frame'
-					Logger.loginfo('Empty bin :'+ userdata.bin)
-					return 'continue'
-		except :
-			Logger.logwarn("An exception occurred")
-			return 'failed'
+#		try :
+		for i in range(len(userdata.bin_Content)):
+			bin_content = userdata.bin_Content[i]
+			if bin_content[0] == 'empty' or  bin_content[0] == 'Empty':
+				i = i + 1
+				userdata.bin = 'bin'+ str(i)
+				userdata.bin_frame = 'bin'+ str(i) + '_frame'
+				Logger.loginfo('Empty bin :'+ userdata.bin)
+				return 'continue'
+		# except :
+		# 	Logger.logwarn("An exception occurred with getEmptyBin")
+		# 	return 'failed'
 
 	def on_enter(self, userdata):
 		pass

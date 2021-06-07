@@ -57,7 +57,7 @@ class a2_MoveRobotSM(Behavior):
 		# x:30 y:463, x:554 y:386
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'], input_keys=['pick_Offset', 'pick_Rotation', 'robot_Name', 'preDrop_Config', 'prePick_Config', 'bin_Pose', 'drop_Offset', 'drop_Rotation', 'pick_Pose'])
 		_state_machine.userdata.offset = 0.0
-		_state_machine.userdata.rotation = 0.0
+		_state_machine.userdata.rotation = 180
 		_state_machine.userdata.pick_Offset = []
 		_state_machine.userdata.pick_Rotation = []
 		_state_machine.userdata.trueVariable = True
@@ -92,7 +92,7 @@ class a2_MoveRobotSM(Behavior):
 										autonomy={'continue': Autonomy.Off},
 										remapping={'input_pose': 'pick_Pose', 'offset_pose': 'pose_Decrease', 'output_pose': 'pick_Pose'})
 
-			# x:1572 y:400
+			# x:1278 y:742
 			OperatableStateMachine.add('addDropOffsetPose',
 										AddOffsetToPoseState(),
 										transitions={'continue': 'moveToPreDrop'},
@@ -148,7 +148,7 @@ class a2_MoveRobotSM(Behavior):
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'pose': 'pose_Decrease'})
 
-			# x:1576 y:290
+			# x:1441 y:739
 			OperatableStateMachine.add('createDropOffsetPose',
 										CreateDropPoseState(),
 										transitions={'continue': 'addDropOffsetPose', 'failed': 'failed'},
@@ -165,7 +165,7 @@ class a2_MoveRobotSM(Behavior):
 			# x:1562 y:176
 			OperatableStateMachine.add('isPartAttached',
 										EqualState(),
-										transitions={'true': 'createDropOffsetPose', 'false': 'createDecreasePick'},
+										transitions={'true': 'moveBackToPick', 'false': 'createDecreasePick'},
 										autonomy={'true': Autonomy.Off, 'false': Autonomy.Off},
 										remapping={'value_a': 'gripper_Attached', 'value_b': 'trueVariable'})
 
@@ -175,6 +175,13 @@ class a2_MoveRobotSM(Behavior):
 										transitions={'true': 'moveBackToPreDrop', 'false': 'wait_3_2_2'},
 										autonomy={'true': Autonomy.Off, 'false': Autonomy.Off},
 										remapping={'value_a': 'gripper_Attached', 'value_b': 'falseVariable'})
+
+			# x:1458 y:451
+			OperatableStateMachine.add('moveBackToPick',
+										SrdfStateToMoveitAriac(),
+										transitions={'reached': 'createDropOffsetPose', 'planning_failed': 'wait_8', 'control_failed': 'wait_8', 'param_error': 'failed'},
+										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
+										remapping={'config_name': 'prePick_Config', 'move_group': 'move_group', 'action_topic_namespace': 'action_topic_namespace', 'action_topic': 'action_topic', 'robot_name': 'robot_name', 'config_name_out': 'config_name_out', 'move_group_out': 'move_group_out', 'robot_name_out': 'robot_name_out', 'action_topic_out': 'action_topic_out', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
 			# x:23 y:583
 			OperatableStateMachine.add('moveBackToPreDrop',
@@ -278,6 +285,12 @@ class a2_MoveRobotSM(Behavior):
 			OperatableStateMachine.add('wait_7',
 										WaitState(wait_time=0.5),
 										transitions={'done': 'moveHome'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:1655 y:460
+			OperatableStateMachine.add('wait_8',
+										WaitState(wait_time=0.5),
+										transitions={'done': 'moveBackToPick'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:1026 y:248

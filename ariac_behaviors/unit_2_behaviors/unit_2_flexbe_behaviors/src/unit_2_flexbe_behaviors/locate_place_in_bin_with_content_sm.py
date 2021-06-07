@@ -52,8 +52,8 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
-		# x:38 y:214, x:164 y:154, x:278 y:259
-		_state_machine = OperatableStateMachine(outcomes=['finished', 'getEmptyBin', 'failed'], input_keys=['bin', 'part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'robot_Name', 'pick_Offset', 'pick_Rotation', 'bin_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config'])
+		# x:38 y:214, x:164 y:154, x:278 y:259, x:181 y:216
+		_state_machine = OperatableStateMachine(outcomes=['finished', 'getEmptyBin', 'failed', 'system_Full'], input_keys=['bin', 'part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'robot_Name', 'pick_Offset', 'pick_Rotation', 'bin_Pose', 'drop_Offset', 'drop_Rotation', 'prePick_Config', 'preDrop_Config'])
 		_state_machine.userdata.bin = ''
 		_state_machine.userdata.ref_frame = 'world'
 		_state_machine.userdata.part_Type = 'gear_part'
@@ -109,8 +109,8 @@ class locate_Place_In_Bin_With_ContentSM(Behavior):
 			# x:59 y:260
 			OperatableStateMachine.add('getNewBinWithPartType',
 										getNewBinPartType(),
-										transitions={'continue': 'selectRobot', 'findEmptyBin': 'getEmptyBin'},
-										autonomy={'continue': Autonomy.Off, 'findEmptyBin': Autonomy.Off},
+										transitions={'continue': 'selectRobot', 'findEmptyBin': 'getEmptyBin', 'system_Full': 'system_Full'},
+										autonomy={'continue': Autonomy.Off, 'findEmptyBin': Autonomy.Off, 'system_Full': Autonomy.Off},
 										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content', 'bin_frame': 'bin_frame'})
 
 			# x:257 y:448

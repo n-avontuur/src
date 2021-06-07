@@ -11,7 +11,7 @@ class setNewPosePart(EventState):
 	'''
 
 	def __init__(self):
-		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset','drop_Rotation','pick_Rotation','numberOfModels'])
+		super(setNewPosePart,self).__init__(input_keys = ['part_Content','numberOfModels','bin','bin_Content'],outcomes = ['continue', 'failed','bin_Full'], output_keys = ['drop_Offset','pick_Offset','drop_Rotation','pick_Rotation','numberOfModels','bin_Content'])
 
 	def on_enter(self, userdata):
 		offset=userdata.part_Content[0]
@@ -47,32 +47,38 @@ class setNewPosePart(EventState):
 		max_parts=max_Y*max_X
 		numberOfParts=self._numberParts
 		offset=[]
-		try:
-			if (self._numberParts == max_parts):
-				self._numberParts = 0
-				return 'bin_Full'
-			matrix= [[0 for _ in range(max_Y)] for _ in range(max_X)]
-			for i in range(max_X):
-				for j in range(max_Y):
-					matrix[i][j] = i*max_Y+j
-			liststr = ' '.join([str(elem) for elem in matrix])
-			Logger.loginfo('row:'+liststr)
-			for i in range(max_X):
-				for j in range(max_Y):
-					if ((numberOfParts+1) == matrix[i][j]):
-						offset=self._offset[i][j]
-		except:
-			Logger.loginfo('table wasnt made')
+		if (self._numberParts == max_parts):
+			self._numberParts = 0
+			Logger.loginfo('bin is full')
+			if userdata.bin == 'bin1':
+				userdata.bin_Content[0][0] == 'full'
+			if userdata.bin == 'bin2':
+				userdata.bin_Content[1][0] == 'full'
+			if userdata.bin == 'bin3':
+				userdata.bin_Content[2][0] == 'full'
+			if userdata.bin == 'bin4':
+				userdata.bin_Content[3][0] == 'full'
+			if userdata.bin == 'bin5':
+				userdata.bin_Content[4][0] == 'full'
+			if userdata.bin == 'bin6':
+				userdata.bin_Content[5][0] == 'full'
+			return 'bin_Full'
+		matrix= [[0 for _ in range(max_Y)] for _ in range(max_X)]
+		for i in range(max_X):
+			for j in range(max_Y):
+				matrix[i][j] = i*max_Y+j
+		liststr = ' '.join([str(elem) for elem in matrix])
+		Logger.loginfo('matrix :'+liststr)
+		for i in range(max_X):
+			for j in range(max_Y):
+				if ((numberOfParts+1) == matrix[i][j]):
+					offset=self._offset[i][j]
+					liststr = ' '.join([str(elem) for elem in offset])
+					Logger.loginfo('offset :'+liststr)
+					self._offset_x=offset[0]
+					self._offset_y=offset[1]
 
-		
-		try:
-			rospy.loginfo(offset)
-			self._offset_x=offset[0]
-			self._offset_y=offset[1]	
-		except:
-			Logger.loginfo('X&Y not correct out table')
-
-		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z+0.05]
+		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z+0.02]
 		userdata.pick_Offset=[0.0,0.0,self._offset_z]
 		userdata.drop_Rotation=[0.0,0.0,0.0]
 		userdata.pick_Rotation=[0.0,0.0,0.0]
