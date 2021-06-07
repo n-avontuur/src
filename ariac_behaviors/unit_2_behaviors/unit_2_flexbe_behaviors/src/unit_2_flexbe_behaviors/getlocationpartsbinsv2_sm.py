@@ -65,6 +65,7 @@ class GetLocationPartsBinsV2SM(Behavior):
 		_state_machine.userdata.ref_frame = 'world'
 		_state_machine.userdata.bin_Content = [['empty','x'], ['empty','x'], ['empty','x'], ['empty','x'], ['empty','x'], ['empty','x']]
 		_state_machine.userdata.bin = ''
+		_state_machine.userdata.status = 'used'
 
 		# Additional creation code can be added inside the following tags
 		# [MANUAL_CREATE]
@@ -240,42 +241,42 @@ class GetLocationPartsBinsV2SM(Behavior):
 										setBinPartType(),
 										transitions={'continue': 'bin 2'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin1', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'status': 'status', 'bin': 'bin1', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:1009 y:129
 			OperatableStateMachine.add('setPartTypeInBins_2',
 										setBinPartType(),
 										transitions={'continue': 'bin 3'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin2', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'status': 'status', 'bin': 'bin2', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:1009 y:221
 			OperatableStateMachine.add('setPartTypeInBins_3',
 										setBinPartType(),
 										transitions={'continue': 'bin 4'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin3', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'status': 'status', 'bin': 'bin3', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:1009 y:313
 			OperatableStateMachine.add('setPartTypeInBins_4',
 										setBinPartType(),
 										transitions={'continue': 'lookUpTopic_5'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin4', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'status': 'status', 'bin': 'bin4', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:1009 y:405
 			OperatableStateMachine.add('setPartTypeInBins_5',
 										setBinPartType(),
 										transitions={'continue': 'bin 6'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin5', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'status': 'status', 'bin': 'bin5', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:995 y:505
 			OperatableStateMachine.add('setPartTypeInBins_6',
 										setBinPartType(),
 										transitions={'continue': 'finished'},
 										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin6', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
+										remapping={'status': 'status', 'bin': 'bin6', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 
 		return _state_machine

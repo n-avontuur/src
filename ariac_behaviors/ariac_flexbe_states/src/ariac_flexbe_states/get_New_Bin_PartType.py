@@ -19,41 +19,30 @@ class getNewBinPartType(EventState):
 
 
 	def execute(self, userdata):
-		if userdata.bin == 'bin1':
-			i = 1
-		elif userdata.bin == 'bin2':
-			i = 2
-		elif userdata.bin == 'bin3':
-			i = 3
-		elif userdata.bin == 'bin4':
-			i = 4
-		elif userdata.bin == 'bin5':
-			i = 5
-		elif userdata.bin == 'bin6':
-			Logger.loginfo('look for empty bin')
-			return "findEmptyBin"
-
-		x =0
+		x=0
+		i=0
 		while i < 6:
-			self._binUsed=userdata.bin_Content[i]
-			if self._binUsed[0]=="used" and self._binUsed[1]==self._part:
-				i = i + 1
+			if userdata.bin_Content[i] == ["used",self._part]:
+				i = i+ 1
 				userdata.bin = ('bin'+ str(i))
 				userdata.bin_frame = ('bin'+ str(i) + '_frame')
-				Logger.loginfo('New Bin selected')
+				Logger.loginfo("new bin found :" + userdata.bin)
 				return 'continue'
-			if self._binUsed[0]=="full":
+			if userdata.bin_Content[i] == ["full",self._part]:
 				x +=1
+				Logger.loginfo('fulbin bin :'+ str(i))
 				if x == 6:
 					return 'system_Full'
+				i = i+ 1
 			else :
-				i= i+1
+				i = i+ 1
 		return 'findEmptyBin'
 	def on_enter(self, userdata):
 		self._part = userdata.part_Type
 		pass
 
 	def on_exit(self, userdata):
+
 		pass
 
 	def on_start(self):

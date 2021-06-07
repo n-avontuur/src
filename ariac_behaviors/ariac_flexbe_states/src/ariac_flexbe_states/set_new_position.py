@@ -49,19 +49,6 @@ class setNewPosePart(EventState):
 		offset=[]
 		if (self._numberParts == max_parts):
 			self._numberParts = 0
-			Logger.loginfo('bin is full')
-			if userdata.bin == 'bin1':
-				userdata.bin_Content[0][0] == 'full'
-			if userdata.bin == 'bin2':
-				userdata.bin_Content[1][0] == 'full'
-			if userdata.bin == 'bin3':
-				userdata.bin_Content[2][0] == 'full'
-			if userdata.bin == 'bin4':
-				userdata.bin_Content[3][0] == 'full'
-			if userdata.bin == 'bin5':
-				userdata.bin_Content[4][0] == 'full'
-			if userdata.bin == 'bin6':
-				userdata.bin_Content[5][0] == 'full'
 			return 'bin_Full'
 		matrix= [[0 for _ in range(max_Y)] for _ in range(max_X)]
 		for i in range(max_X):
@@ -71,6 +58,13 @@ class setNewPosePart(EventState):
 		Logger.loginfo('matrix :'+liststr)
 		for i in range(max_X):
 			for j in range(max_Y):
+				if numberOfParts == 0:
+					if ((numberOfParts) == matrix[i][j]):
+						offset=self._offset[i][j]
+						liststr = ' '.join([str(elem) for elem in offset])
+						Logger.loginfo('offset :'+liststr)
+						self._offset_x=offset[0]
+						self._offset_y=offset[1]
 				if ((numberOfParts+1) == matrix[i][j]):
 					offset=self._offset[i][j]
 					liststr = ' '.join([str(elem) for elem in offset])

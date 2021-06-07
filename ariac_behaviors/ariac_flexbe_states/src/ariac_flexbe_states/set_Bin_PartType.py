@@ -15,27 +15,28 @@ class setBinPartType(EventState):
 	'''
 
 	def __init__(self):
-		super(setBinPartType,self).__init__(input_keys = ["bin","part_Type","bin_Content" ],outcomes = ['continue'], output_keys = ['bin_Content'])
+		super(setBinPartType,self).__init__(input_keys = ["status","bin","part_Type","bin_Content" ],outcomes = ['continue'], output_keys = ['bin_Content'])
 
 
 	def execute(self, userdata):
 		if userdata.bin == "bin1":
-			self._content[0]=['used',self._part]
+			self._content[0]=[self._status,self._part]
 		if userdata.bin == "bin2" :
-			self._content[1]=['used',self._part]
+			self._content[1]=[self._status,self._part]
 		if userdata.bin == "bin3":
-			self._content[2]=['used',self._part]
+			self._content[2]=[self._status,self._part]
 		if userdata.bin == "bin4":
-			self._content[3]=['used',self._part]
+			self._content[3]=[self._status,self._part]
 		if userdata.bin == "bin5":
-			self._content[4]=['used',self._part]
+			self._content[4]=[self._status,self._part]
 		elif userdata.bin == "bin6":
-			self._content[5]=['used',self._part]
+			self._content[5]=[self._status,self._part]
 		liststr = ' '.join([str(elem) for elem in self._content])
 		Logger.loginfo('set List content bin: '+liststr)
 		return 'continue'
 
 	def on_enter(self, userdata):
+		self._status = userdata.status
 		self._part = userdata.part_Type
 		self._content = userdata.bin_Content
 		pass

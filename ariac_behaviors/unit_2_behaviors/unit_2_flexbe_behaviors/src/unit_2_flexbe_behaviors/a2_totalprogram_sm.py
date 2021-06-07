@@ -8,6 +8,7 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
+from ariac_flexbe_states.end_assignment_state import EndAssignment
 from ariac_flexbe_states.get_Bin_PartType import getBinPartType
 from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.start_assignment_state import StartAssignment
@@ -60,7 +61,7 @@ class a2_TotalProgramSM(Behavior):
 
 	def create(self):
 		joint_names = ['linear_arm_actuator_joint', 'shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
-		# x:47 y:200, x:488 y:263, x:731 y:382
+		# x:47 y:200, x:488 y:263, x:188 y:617
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'system_Full'])
 		_state_machine.userdata.numberOfModels = 0
 		_state_machine.userdata.robot_Name = ''
@@ -85,7 +86,7 @@ class a2_TotalProgramSM(Behavior):
 			# x:767 y:441
 			OperatableStateMachine.add('Locate_Place_In_Empty_Bin',
 										self.use_behavior(Locate_Place_In_Empty_BinSM, 'Locate_Place_In_Empty_Bin'),
-										transitions={'finished': 'a2_MoveRobot', 'failed': 'failed', 'system_Full': 'system_Full'},
+										transitions={'finished': 'a2_MoveRobot', 'failed': 'failed', 'system_Full': 'endAssigment'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'system_Full': Autonomy.Inherit},
 										remapping={'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'preDrop_Config': 'preDrop_Config', 'prePick_Config': 'prePick_Config', 'robot_Name': 'robot_Name', 'bin_Pose': 'bin_Pose'})
 
@@ -95,12 +96,18 @@ class a2_TotalProgramSM(Behavior):
 										transitions={'finished': 'initGripper', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
 
-			# x:348 y:414
+			# x:300 y:354
 			OperatableStateMachine.add('a2_MoveRobot',
 										self.use_behavior(a2_MoveRobotSM, 'a2_MoveRobot'),
 										transitions={'finished': 'GetLocationPartsBinsV2', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'robot_Name': 'robot_Name', 'preDrop_Config': 'preDrop_Config', 'prePick_Config': 'prePick_Config', 'bin_Pose': 'bin_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Pose': 'pick_Pose'})
+
+			# x:348 y:549
+			OperatableStateMachine.add('endAssigment',
+										EndAssignment(),
+										transitions={'continue': 'system_Full'},
+										autonomy={'continue': Autonomy.Off})
 
 			# x:1116 y:354
 			OperatableStateMachine.add('getBin',
@@ -118,7 +125,7 @@ class a2_TotalProgramSM(Behavior):
 			# x:695 y:283
 			OperatableStateMachine.add('locate_Place_In_Bin_With_Content',
 										self.use_behavior(locate_Place_In_Bin_With_ContentSM, 'locate_Place_In_Bin_With_Content'),
-										transitions={'finished': 'a2_MoveRobot', 'getEmptyBin': 'Locate_Place_In_Empty_Bin', 'failed': 'failed', 'system_Full': 'system_Full'},
+										transitions={'finished': 'a2_MoveRobot', 'getEmptyBin': 'Locate_Place_In_Empty_Bin', 'failed': 'failed', 'system_Full': 'endAssigment'},
 										autonomy={'finished': Autonomy.Inherit, 'getEmptyBin': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'system_Full': Autonomy.Inherit},
 										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content', 'robot_Name': 'robot_Name', 'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'bin_Pose': 'bin_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'prePick_Config': 'prePick_Config', 'preDrop_Config': 'preDrop_Config'})
 
