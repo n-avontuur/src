@@ -51,7 +51,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 
 	def create(self):
 		parameter_name = '/ariac_tables_unit2'
-		# x:28 y:217, x:213 y:236, x:230 y:350
+		# x:28 y:217, x:213 y:236, x:127 y:234
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed', 'system_Full'], input_keys=['part_Type', 'gasket', 'piston', 'gear', 'bin_Content'], output_keys=['part_Type', 'gear', 'gasket', 'piston', 'pick_Offset', 'pick_Rotation', 'drop_Offset', 'drop_Rotation', 'preDrop_Config', 'prePick_Config', 'robot_Name', 'bin_Pose'])
 		_state_machine.userdata.bin_Content = ["empty","empty","empty","empty","empty","empty"]
 		_state_machine.userdata.bin = ' '
@@ -82,8 +82,8 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 			# x:73 y:80
 			OperatableStateMachine.add('getEmptyBin',
 										getEmptyBin(),
-										transitions={'continue': 'setFirstTimeParts', 'failed': 'failed'},
-										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
+										transitions={'continue': 'setFirstTimeParts', 'failed': 'failed', 'system_Full': 'system_Full'},
+										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off, 'system_Full': Autonomy.Off},
 										remapping={'bin_Content': 'bin_Content', 'bin': 'bin', 'bin_frame': 'bin_frame'})
 
 			# x:439 y:345
@@ -112,7 +112,7 @@ class Locate_Place_In_Empty_BinSM(Behavior):
 										setFirstTimePart(),
 										transitions={'continue': 'setPartWithPartType', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
-										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear'})
+										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content'})
 
 			# x:152 y:390
 			OperatableStateMachine.add('setNewOffsetPosition',

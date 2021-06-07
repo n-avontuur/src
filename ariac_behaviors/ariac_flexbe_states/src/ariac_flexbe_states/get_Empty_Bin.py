@@ -14,7 +14,7 @@ class getEmptyBin(EventState):
 	'''
 
 	def __init__(self):
-		super(getEmptyBin,self).__init__(input_keys = ['bin_Content'],outcomes = ['continue', 'failed'], output_keys = ['bin','bin_frame'])
+		super(getEmptyBin,self).__init__(input_keys = ['bin_Content'],outcomes = ['continue', 'failed','system_Full'], output_keys = ['bin','bin_frame'])
 
 
 	def execute(self, userdata):
@@ -22,14 +22,13 @@ class getEmptyBin(EventState):
 		Logger.loginfo('bin Content: '+liststr)
 		try :
 			for i in range(len(userdata.bin_Content)):
-				if userdata.bin_Content[i][0] == 'empty' or  userdata.bin_Content[i][0] == 'Empty':
+				bin_content = userdata.bin_Content[i]
+				if bin_content[0] == 'empty' or  bin_content[0] == 'Empty':
 					i = i + 1
 					userdata.bin = 'bin'+ str(i)
 					userdata.bin_frame = 'bin'+ str(i) + '_frame'
 					Logger.loginfo('Empty bin :'+ userdata.bin)
 					return 'continue'
-				else :
-					return 'failed'
 		except :
 			Logger.logwarn("An exception occurred")
 			return 'failed'

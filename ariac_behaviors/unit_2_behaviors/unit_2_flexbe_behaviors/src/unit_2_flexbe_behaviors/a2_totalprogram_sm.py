@@ -9,7 +9,6 @@
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
 from ariac_flexbe_states.get_Bin_PartType import getBinPartType
-from ariac_flexbe_states.set_Bin_PartType import setBinPartType
 from ariac_flexbe_states.set_Part_FirstTime import setFirstTimePart
 from ariac_flexbe_states.start_assignment_state import StartAssignment
 from unit_2_flexbe_behaviors.a1_robots_home_sm import a1_Robots_HomeSM
@@ -99,7 +98,7 @@ class a2_TotalProgramSM(Behavior):
 			# x:355 y:383
 			OperatableStateMachine.add('a2_MoveRobot',
 										self.use_behavior(a2_MoveRobotSM, 'a2_MoveRobot'),
-										transitions={'finished': 'setPartInBin', 'failed': 'failed'},
+										transitions={'finished': 'GetLocationPartsBinsV2', 'failed': 'failed'},
 										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'pick_Offset': 'pick_Offset', 'pick_Rotation': 'pick_Rotation', 'robot_Name': 'robot_Name', 'preDrop_Config': 'preDrop_Config', 'prePick_Config': 'prePick_Config', 'bin_Pose': 'bin_Pose', 'drop_Offset': 'drop_Offset', 'drop_Rotation': 'drop_Rotation', 'pick_Pose': 'pick_Pose'})
 
@@ -129,13 +128,6 @@ class a2_TotalProgramSM(Behavior):
 										transitions={'continue': 'GetLocationPartsBinsV2', 'failed': 'failed'},
 										autonomy={'continue': Autonomy.Off, 'failed': Autonomy.Off},
 										remapping={'gasket': 'gasket', 'piston': 'piston', 'gear': 'gear', 'bin_Content': 'bin_Content'})
-
-			# x:271 y:295
-			OperatableStateMachine.add('setPartInBin',
-										setBinPartType(),
-										transitions={'continue': 'a1_Robots_Home'},
-										autonomy={'continue': Autonomy.Off},
-										remapping={'bin': 'bin', 'part_Type': 'part_Type', 'bin_Content': 'bin_Content'})
 
 			# x:1079 y:156
 			OperatableStateMachine.add('transport_ conveyor_to_pick_unit2_location',

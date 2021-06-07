@@ -19,27 +19,29 @@ class setBinPartType(EventState):
 
 
 	def execute(self, userdata):
-		if userdata.bin == "bin1" and userdata.bin_Content[0][0]=="empty":
-			userdata.bin_Content[0]=['used',self._part]
-		elif userdata.bin == "bin2" and userdata.bin_Content[1][0]=="empty":
-			userdata.bin_Content[1]=['used',self._part]
-		elif userdata.bin == "bin3" and userdata.bin_Content[2][0]=="empty":
-			userdata.bin_Content[2]=['used',self._part]
-		elif userdata.bin == "bin4" and userdata.bin_Content[3][0]=="empty":
-			userdata.bin_Content[3]=['used',self._part]
-		elif userdata.bin == "bin5" and userdata.bin_Content[4][0]=="empty":
-			userdata.bin_Content[4]=['used',self._part]
-		elif userdata.bin == "bin6" and userdata.bin_Content[5][0]=="empty":
-			userdata.bin_Content[5]=['used',self._part]
-		liststr = ' '.join([str(elem) for elem in userdata.bin_Content])
-		Logger.loginfo('row:'+liststr)
+		if userdata.bin == "bin1":
+			self._content[0]=['used',self._part]
+		if userdata.bin == "bin2" :
+			self._content[1]=['used',self._part]
+		if userdata.bin == "bin3":
+			self._content[2]=['used',self._part]
+		if userdata.bin == "bin4":
+			self._content[3]=['used',self._part]
+		if userdata.bin == "bin5":
+			self._content[4]=['used',self._part]
+		elif userdata.bin == "bin6":
+			self._content[5]=['used',self._part]
+		liststr = ' '.join([str(elem) for elem in self._content])
+		Logger.loginfo('set List content bin: '+liststr)
 		return 'continue'
 
 	def on_enter(self, userdata):
 		self._part = userdata.part_Type
+		self._content = userdata.bin_Content
 		pass
 
 	def on_exit(self, userdata):
+		userdata.bin_Content = self._content
 		pass
 
 	def on_start(self):
