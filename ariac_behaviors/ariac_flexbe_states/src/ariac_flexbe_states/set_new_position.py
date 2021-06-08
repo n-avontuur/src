@@ -58,14 +58,7 @@ class setNewPosePart(EventState):
 		Logger.loginfo('matrix :'+liststr)
 		for i in range(max_X):
 			for j in range(max_Y):
-				if numberOfParts == 0:
-					if ((numberOfParts) == matrix[i][j]):
-						offset=self._offset[i][j]
-						liststr = ' '.join([str(elem) for elem in offset])
-						Logger.loginfo('offset :'+liststr)
-						self._offset_x=offset[0]
-						self._offset_y=offset[1]
-				if ((numberOfParts+1) == matrix[i][j]):
+				if ((numberOfParts) == matrix[i][j]):
 					offset=self._offset[i][j]
 					liststr = ' '.join([str(elem) for elem in offset])
 					Logger.loginfo('offset :'+liststr)

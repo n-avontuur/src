@@ -16,7 +16,7 @@ class setFirstTimePart(EventState):
 	def execute(self, userdata):
 		gasket_offset=[[-0.15,00.15],[-0.15,-0.15]],[[00.00,00.15],[00.00,-0.15]],[[00.15,00.15],[00.15,-0.15]]
 		piston_offset=[[-0.175,00.175],[-0.175,-0.175]],[[0.175,0.175],[0.175,-0.175]]
-		gear_offset=[[-0.2,00.20],[-0.2,00.00],[-0.2,-0.20]],[[00.2,00.20],[00.2,00.00],[00.2,-0.20]]
+		gear_offset  =[[-0.2,00.20],[-0.2,00.00],[-0.2,-0.20]],[[00.2,00.20],[00.2,00.00],[00.2,-0.20]]
 		userdata.gasket=[[gasket_offset],[0.035],[0],[3,2]] #offsetXY,offsetZ,numberParts,matrixXY
 		userdata.piston=[[piston_offset],[0.025],[0],[2,2]] #offsetXY,offsetZ,numberParts,matrixXY
 		userdata.gear=[[gear_offset],[0.035],[0],[2,3]]	#offsetXY,offsetZ,numberParts,matrixXY
