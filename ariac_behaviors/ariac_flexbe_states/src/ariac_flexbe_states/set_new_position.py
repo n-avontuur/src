@@ -71,6 +71,8 @@ class setNewPosePart(EventState):
 					Logger.loginfo('offset :'+liststr)
 					self._offset_x=offset[0]
 					self._offset_y=offset[1]
+				Logger.loginfo('inhoud matrix:'+str(matrix[i][j]))
+
 
 		userdata.drop_Offset=[self._offset_x,self._offset_y,self._offset_z+0.02]
 		userdata.pick_Offset=[0.0,0.0,self._offset_z]
